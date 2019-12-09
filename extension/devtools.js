@@ -42,6 +42,37 @@ chrome.devtools.panels.create(
                   obj[componentNames[i]] = null;
                 }
 
+
+                svelte.walk(ast, {
+                  enter(node, parent, prop, index) {
+                    if (node.hasOwnProperty('declarations')) {
+
+
+                      // For variable declarations that either have not been initialized or have a value that is equal to 'null'
+                      if (!node.declarations[0].init) { // || node.declarations[0].init.type === "Literal") {
+                        t2[node.declarations[0].id.name] = node.declarations[0].init;
+                        obj['state'] = t2;
+
+                        
+                      // // For variable declarations that have a value that is a primitive data type or is a "literal"
+                      } else if (node.declarations[0].init.type === "Literal") {
+                        t2[node.declarations[0].id.name] = node.declarations[0].init.value;
+                        obj['state'] = t2;
+                      
+
+                      // For variable declarations that have a value that is a composite data
+                      } else if (node.declarations[0].init.type === "ObjectExpression" || node.declarations[0].init.type === "ArrayExpression") {
+                        t2[node.declarations[0].id.name] = compositeDataTypeFoundInAST(node.declarations[0].init);
+                        obj['state'] = t2;
+                      }
+                    }
+                  },
+                  leave(node, parent, prop, index) {
+                    // do_something_else(node);
+                  }
+                })
+
+
                 if (Object.entries(obj).length !== 0) {
                   unorderedListOfNodesForDependencyGraph.push(obj);
                 }
