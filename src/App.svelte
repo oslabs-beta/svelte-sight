@@ -1,30 +1,44 @@
 <script>
-	export let name;
+  import ViewsContainer from './views/ViewsContainer.svelte';
+	import StatesContainer from './states/StatesContainer.svelte';
+  import TimeTravelContainer from './timetravel/TimeTravelContainer.svelte';
 </script>
 
 <main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+  <section>
+    <ViewsContainer />
+    <StatesContainer />
+  </section>
+  <TimeTravelContainer />
 </main>
 
 <style>
 	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
+		height: 100%;
+		width: 100%;
+		margin: 0;
+		padding: 0;
+		display: grid;
+    grid-template-rows: minmax(0, 1fr) 40px;
 	}
 
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
+	section {
+    grid-row: 1 / span 1;
+    background-color: blueviolet;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+	TimeTravelContainer {
+    grid-row: 2 / span 1;
+  }
+
+	ViewsContainer {
+    grid-column: 1 / span 1;
 	}
 
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
+	StatesContainer {
+    grid-column: 2 / span 1;
+		padding: .5rem;
 	}
 </style>
