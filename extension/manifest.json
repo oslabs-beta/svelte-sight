@@ -1,0 +1,34 @@
+{
+  "name": "Svelte Tool",
+  "version": "1.0",
+  "description": "Svelte application monitoring and debugging",
+  "permissions": [
+    "tabs",
+    "activeTab", 
+    "<all_urls>"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["contentscript.js"]
+    }],
+  "devtools_page": "devtools.html",
+  "browser_action": {
+    "default_icon": {
+      "16": "assets/st-logo16.png",
+      "32": "assets/st-logo32.png",
+      "48": "assets/st-logo48.png",
+      "128": "assets/st-logo128.png"
+    }
+  },
+  "icons": {
+    "16": "assets/st-logo16.png",
+    "32": "assets/st-logo32.png",
+    "48": "assets/st-logo48.png",
+    "128": "assets/st-logo128.png"
+  },
+  "manifest_version": 2
+}
