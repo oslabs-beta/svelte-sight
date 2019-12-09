@@ -1,4 +1,4 @@
-import svelte from 'svelte/compiler';
+// import svelte from 'svelte/compiler';
 
 // globals
 let i = 0;
@@ -9,7 +9,7 @@ let componentTree;
 chrome.devtools.panels.create(
   'Svelte Tool',
   null,
-  'devtools.html',
+  'panel.html',
   (panel) => {
     panel.onShown.addListener(() =>
       chrome.devtools.inspectedWindow.getResources((resources) => {
