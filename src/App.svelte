@@ -1,6 +1,6 @@
 <script>
   import ViewsContainer from './views/ViewsContainer.svelte';
-	import StatesContainer from './states/StatesContainer.svelte';
+  import StatesContainer from './states/StatesContainer.svelte';
   import TimeTravelContainer from './timetravel/TimeTravelContainer.svelte';
 </script>
 
