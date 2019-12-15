@@ -11,6 +11,9 @@
   const D3PreTree = [];
   let unorderedListOfNodesForDependencyGraph = [];  // This is a pre- or partial tree with known relationships among componenets/files that go only 1 layer deep (this is all we need to build the rest of the tree)
   let componentTree;
+  //globals for D3 component tree
+  let AST = []
+  let urls = []
 
 
   chrome.devtools.inspectedWindow.getResources((resources) => {
@@ -139,6 +142,64 @@
         }
       })
     })
+
+    //retrieves each urls and pushes onto urls array
+    for (let i = 0; i < arrSvelteFiles.length; i++) {
+        urls.push(JSON.parse(JSON.stringify(arrSvelteFiles[i])))
+        arrSvelteFiles[i].getContent(content => {
+          AST.push(svelte.parse(content))
+        })
+     }
+    
+    // runs next logic after async svelte.parse is completed
+    setTimeout(()=> {
+      // modified D3PreTree so that it fits for D3 statify function
+      let newD3Pre = []
+      for (let eachObj of D3PreTree) {
+        let temp = {}
+        let key = Object.keys(eachObj)[0]
+        let value = Object.values(eachObj)[0]
+        key = key.split('')
+        key.shift()
+        key.pop()
+        key.pop()
+        key.pop()
+        key = key.join('')
+        temp[key] = JSON.stringify(value)
+        newD3Pre.push(temp)
+      }
+
+
+    }, 100)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   })
 </script>
 
