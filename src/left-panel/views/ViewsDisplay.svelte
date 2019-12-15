@@ -8,7 +8,7 @@
 
 <style>
   #views-display {
-    background-color: greenyellow;
+    background-color: rgb(37, 42, 50);;
     overflow: auto;
   }
 </style>

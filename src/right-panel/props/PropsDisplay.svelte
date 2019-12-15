@@ -6,6 +6,6 @@
 
 <style>
   #props-display {
-    background-color: seagreen;
+    background-color: rgb(37, 42, 50);
   }
 </style>

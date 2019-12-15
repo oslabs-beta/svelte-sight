@@ -7,8 +7,12 @@
 
 <style>
   #props-navbar {
-    background-color: steelblue;
+    background-color: rgb(76, 80, 86);
     display: flex;
     align-items: center;
+  }
+
+  h2 {
+    margin-left: 5px;
   }
 </style>
