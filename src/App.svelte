@@ -1,7 +1,7 @@
 <script>
   import svelte from 'svelte/compiler';
   import ViewsContainer from './left-panel/views/ViewsContainer.svelte';
-  import StatesContainer from './right-panel/states/StatesContainer.svelte';
+  import RightContainer from './right-panel/RightContainer.svelte';
   
 
 
@@ -145,7 +145,7 @@
 
 <main>
   <ViewsContainer />
-  <StatesContainer />
+  <RightContainer />
 </main>
 
 <style>
@@ -162,8 +162,7 @@
     grid-column: 1 / span 1;
 	}
 
-	StatesContainer {
+	RightContainer {
     grid-column: 2 / span 1;
-		padding: .5rem;
 	}
 </style>
