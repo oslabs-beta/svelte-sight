@@ -9,7 +9,8 @@ body {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	font-family: Consolas, Courier, monospace;
+	color: white;
 }
 
 a {
@@ -35,32 +36,21 @@ input, button, select, textarea {
 	padding: 0.4em;
 	margin: 0 0 0.5em 0;
 	box-sizing: border-box;
-	border: 1px solid #ccc;
-	border-radius: 2px;
-}
-
-input:disabled {
-	color: #ccc;
-}
-
-input[type="range"] {
-	height: 0;
 }
 
 button {
-	color: #333;
-	background-color: #f4f4f4;
+	color: white;
+	background-color: rgb(53, 60, 69);
 	outline: none;
+	border: none;
+	height: 35px;
 }
 
-button:disabled {
-	color: #999;
+button:hover, button:focus {
+	background-color: aliceblue;
+	color: black;
 }
 
-button:not(:disabled):active {
-	background-color: #ddd;
-}
-
-button:focus {
-	border-color: #666;
+h2 {
+	font-weight: 500;
 }

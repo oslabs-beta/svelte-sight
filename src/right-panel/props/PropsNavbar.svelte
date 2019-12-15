@@ -1,12 +1,12 @@
 <script>
 </script>
 
-<div id="states-navbar">
-  <h2>State</h2>
+<div id='props-navbar'>
+  <h2>Props</h2>
 </div>
 
 <style>
-  #states-navbar {
+  #props-navbar {
     background-color: rgb(76, 80, 86);
     display: flex;
     align-items: center;

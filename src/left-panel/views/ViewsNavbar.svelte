@@ -34,6 +34,6 @@
 
 <style>
   #views-navbar {
-    background-color: brown;
+    background-color: rgb(53, 60, 69);
   }
 </style>
