@@ -155,7 +155,7 @@
 		margin: 0;
 		padding: 0;
 		display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 60%) minmax(0, 40%);
 	}
 
 	ViewsContainer {
