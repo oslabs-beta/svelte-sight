@@ -10,9 +10,7 @@
 
 <style>
   #states-container {
-    background-color: gold;
     border: 1px solid rgb(105, 107, 112);
-    border-right: .5px solid rgb(105, 107, 112);
     display: grid;
     grid-template-rows: 35px minmax(0, 1fr);
     overflow: auto;
