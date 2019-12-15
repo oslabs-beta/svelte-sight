@@ -43,7 +43,7 @@ button {
 	background-color: rgb(53, 60, 69);
 	outline: none;
 	border: none;
-	height: 35px;
+	height: 34px;
 }
 
 button:hover, button:focus {
