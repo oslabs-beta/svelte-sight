@@ -21,6 +21,22 @@
     
     // runs next logic after async svelte.parse is completed
     setTimeout(()=> {
+      // modified the key name to match the url key later and made the value 
+      // to be the stringified version of value from D3PreTree
+      let newD3Pre = []
+      for (let eachObj of D3PreTree) {
+        let temp = {}
+        let key = Object.keys(eachObj)[0]
+        let value = Object.values(eachObj)[0]
+        key = key.split('')
+        key.shift()
+        key.pop()
+        key.pop()
+        key.pop()
+        key = key.join('')
+        temp[key] = JSON.stringify(value)
+        newD3Pre.push(temp)
+      }
 
     }, 100)
     })
