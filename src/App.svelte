@@ -1,8 +1,8 @@
 <script>
-  import ViewsContainer from './views/ViewsContainer.svelte';
-  import StatesContainer from './states/StatesContainer.svelte';
-  import TimeTravelContainer from './timetravel/TimeTravelContainer.svelte';
   import svelte from 'svelte/compiler';
+  import ViewsContainer from './left-panel/views/ViewsContainer.svelte';
+  import RightContainer from './right-panel/RightContainer.svelte';
+  
 
 
   // globals
@@ -171,45 +171,13 @@
 
 
     }, 100)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   })
 </script>
 
 
 <main>
-  <section>
-    <ViewsContainer />
-    <StatesContainer />
-  </section>
-  <TimeTravelContainer />
+  <ViewsContainer />
+  <RightContainer />
 </main>
 
 <style>
@@ -219,26 +187,14 @@
 		margin: 0;
 		padding: 0;
 		display: grid;
-    grid-template-rows: minmax(0, 1fr) 40px;
+    grid-template-columns: minmax(0, 60%) minmax(0, 40%);
 	}
-
-	section {
-    grid-row: 1 / span 1;
-    background-color: blueviolet;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-
-	TimeTravelContainer {
-    grid-row: 2 / span 1;
-  }
 
 	ViewsContainer {
     grid-column: 1 / span 1;
 	}
 
-	StatesContainer {
+	RightContainer {
     grid-column: 2 / span 1;
-		padding: .5rem;
 	}
 </style>
