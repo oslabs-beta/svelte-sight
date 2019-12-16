@@ -3,7 +3,7 @@
 </script>
 
 <div id='views-display'>
-  <div id='tree-root'></div>
+  <div id='views-root'></div>
 </div>
 
 <style>
