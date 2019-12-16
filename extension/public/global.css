@@ -44,9 +44,13 @@ button {
 	outline: none;
 	border: none;
 	height: 34px;
+	width: 65px;
+	margin: 0;
+	float: left;
+	font-size: 15px;
 }
 
-button:hover, button:focus {
+button:hover, button:active {
 	background-color: aliceblue;
 	color: black;
 }
