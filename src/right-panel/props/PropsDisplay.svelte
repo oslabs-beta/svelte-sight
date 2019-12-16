@@ -2,6 +2,7 @@
 </script>
 
 <div id='props-display'>
+  <div id='props-root'></div>
 </div>
 
 <style>
