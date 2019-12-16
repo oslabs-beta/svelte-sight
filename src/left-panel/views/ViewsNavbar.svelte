@@ -2,46 +2,34 @@
   import svelte from 'svelte/compiler'
 
   // Conditional rendering 
-  const getData = () => { 
+  const getData = (tab) => { 
     const viewsRoot = document.getElementById('views-root');
     const statesRoot = document.getElementById('states-root');
     const propsRoot = document.getElementById('props-root');
 
-    viewsRoot.innerText = 'Get Data';
-    statesRoot.innerText = 'Get Data';
-    propsRoot.innerText = 'Get Data';
+    switch (tab) {
+      case 'data':
+        viewsRoot.innerText = 'Data';
+        statesRoot.innerText = 'Data';
+        propsRoot.innerText = 'Data';
+        break;
+      case 'tree':
+        viewsRoot.innerText = 'tree';
+        statesRoot.innerText = 'tree';
+        propsRoot.innerText = 'tree';
+        break;
+      case 'chart':
+        viewsRoot.innerText = 'chart';
+        statesRoot.innerText = 'chart';
+        propsRoot.innerText = 'chart';
+        break;
+      case 'raw':
+        viewsRoot.innerText = 'raw';
+        statesRoot.innerText = 'raw';
+        propsRoot.innerText = 'raw';
+        break;
+    }
   }
-
-  const getTree = () => {
-    const viewsRoot = document.getElementById('views-root');
-    const statesRoot = document.getElementById('states-root');
-    const propsRoot = document.getElementById('props-root');
-    
-    viewsRoot.innerText = 'tree';
-    statesRoot.innerText = 'tree';
-    propsRoot.innerText = 'tree';
-  }
-
-  const getChart = () => {
-    const viewsRoot = document.getElementById('views-root');
-    const statesRoot = document.getElementById('states-root');
-    const propsRoot = document.getElementById('props-root');
-    
-    viewsRoot.innerText = 'chart';
-    statesRoot.innerText = 'chart';
-    propsRoot.innerText = 'chart';
-  }
-
-  const getRaw = () => {
-    const viewsRoot = document.getElementById('views-root');
-    const statesRoot = document.getElementById('states-root');
-    const propsRoot = document.getElementById('props-root');
-    
-    viewsRoot.innerText = 'raw';
-    statesRoot.innerText = 'raw';
-    propsRoot.innerText = 'raw';
-  }
-
 
 
   //creates function fetchData that will be invoked as user clicks a button
@@ -72,10 +60,10 @@
 </script>
 
 <div id="views-navbar">
-  <button on:click={getData}>Data</button>
-  <button on:click={getTree}>Tree</button>
-  <button on:click={getChart}>Chart</button>
-  <button on:click={getRaw}>Raw</button>
+  <button on:click={() => getData('data')}>Data</button>
+  <button on:click={() => getData('tree')}>Tree</button>
+  <button on:click={() => getData('chart')}>Chart</button>
+  <button on:click={() => getData('raw')}>Raw</button>
 </div>
 
 <style>
