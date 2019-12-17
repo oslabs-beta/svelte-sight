@@ -57,6 +57,7 @@
     })
 
   }
+   setTimeout(function(){fetchData()},300)
 </script>
 
 <div id="views-navbar">
