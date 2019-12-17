@@ -171,7 +171,43 @@
 
       //declare global variable object to assemble component template
       let bigData = {}
-      
+
+      //mapped out ASTP array so that it is easier to access the node that contains import declaration
+      //iterated through the AST array and modified the source key to later match with url array to 
+      // combined into bigData object
+      AST = AST.map(obj => obj.instance.content.body)
+      for (let i = 0; i < AST.length; i++) {
+        AST[i] = AST[i].filter(node=> node.type === "ImportDeclaration")
+        for (let j = 0; j < AST[i].length; j++) {
+          if (AST[i][j].source.value !== 'svelte') {
+            let obj = {}
+            obj.type = AST[i][j].type
+            obj.source = AST[i][j].source.value.split('')
+            obj.source.shift()
+            obj.source.shift()
+            obj.source = obj.source.join('')
+            obj.source = obj.source.replace('.svelte', '')
+            AST[i][j] = obj
+          } else {
+            let obj = {}
+            obj.type = AST[i][j].type
+            obj.source = AST[i][j].source.value
+            AST[i][j] = obj
+          }
+        }
+      }
+
+      // modified the url array to match with AST array and then combined into 
+      // bigData object
+      for (let i = 0 ; i < urls.length; i++) {
+        for (let j = urls[i].url.length - 1; j > 0; j--) {
+          if (urls[i].url[j] === '/') {
+            urls[i].url = urls[i].url.slice(j+1, urls[i].url.length).replace('.svelte', '')
+          }
+        }
+        bigData[urls[i].url] = AST[i]
+      }
+
 
 
     }, 100)
