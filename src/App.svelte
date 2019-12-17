@@ -156,7 +156,7 @@
       // modified D3PreTree so that it fits for D3 statify function
       let newD3Pre = []
       for (let eachObj of D3PreTree) {
-        let temp = {}
+        let temp = {} 
         let key = Object.keys(eachObj)[0]
         let value = Object.values(eachObj)[0]
         key = key.split('')
@@ -168,6 +168,10 @@
         temp[key] = JSON.stringify(value)
         newD3Pre.push(temp)
       }
+
+      //declare global variable object to assemble component template
+      let bigData = {}
+      
 
 
     }, 100)
