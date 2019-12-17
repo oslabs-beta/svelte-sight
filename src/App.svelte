@@ -208,6 +208,64 @@
         bigData[urls[i].url] = AST[i]
       }
 
+      //iterate through bigData and made parent/child object and pushed into componentTemplate array
+      let componentTemplate = []
+      function componentChildren(bigObj) {
+        for (let eachKey in bigObj) {
+          for (let eachObj of bigObj[eachKey]) {
+            if (eachObj.type == 'ImportDeclaration' && eachObj.source !== 'svelte') {
+              let obj={}
+              obj.parent = eachKey
+              obj.child = eachObj.source
+              componentTemplate.push(obj)
+            }
+          }
+        }
+      }
+      componentChildren(bigData)
+      
+      // added special obj for the top parent component for D3 stratifyy function to successfully create relevant array
+      for (let i=0; i < componentTemplate.length; i++) {
+        let obj = {}
+        obj.child = componentTemplate[i].parent
+        if (componentTemplate.every(object => object.child !== obj.child)) {
+          if (obj.child !== '') {
+            obj.parent = ''
+          	componentTemplate.unshift(obj)
+          }     
+        }
+      }
+
+      // combined data from newD3Pre into componentTemplate to render state/props onto panel with D3JS
+      for (let i = 0; i < componentTemplate.length; i++) {
+        for (let j = 0; j < newD3Pre.length; j++) {
+          if (componentTemplate[i].child === Object.keys(newD3Pre[j])[0]) {
+            componentTemplate[i].data = Object.values(newD3Pre[j])[0]
+          }
+        }
+      }
+
+      // modified componentTemplate for data that has no States and/or Prop to render appropriate states for users
+      // modified the data to show only Props keys for better user experience
+      for (let i = 0; i < componentTemplate.length; i++) {
+        if (!componentTemplate[i].hasOwnProperty('data')) {
+          componentTemplate[i].data = {State : 'No States!', Props : "No Props!"}
+        } else if (Object.keys(componentTemplate[i].data.Props).length === 0) {
+          componentTemplate[i].data.Props = "No Props!"
+        } else {
+          let result = []
+          componentTemplate[i].data.Props = result.concat(Object.keys(componentTemplate[i].data.Props))
+        }
+      }
+
+      // finally create templateStructured for D3 using D3.stratify function
+      let templateStructured = d3.stratify()
+                                  .id(function(d){return d.child})
+																	.parentId(function(d){return d.parent})
+																	(componentTemplate)
+
+
+
 
 
     }, 100)
