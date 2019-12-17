@@ -264,6 +264,33 @@
 																	.parentId(function(d){return d.parent})
 																	(componentTemplate)
 
+      // D3 starting
+
+      // margin & width
+
+      let margin = {top: 30, right: 0, bottom: 30, left: 0},
+      width = 400 - margin.left - margin.right,
+      height = 500 - margin.top - margin.bottom;
+
+      // append the svg object to the id tree-root of the page
+      // appends a 'group' element to 'svg'
+      // moves the 'group' element to the top left margin
+      let svg = d3.select("#tree-root").append("svg")
+          .attr("width", width)
+          .attr("height", height)
+          .attr('margin-left', '10px')
+        .append("g")
+          .attr("transform", "translate("
+                + -20 + "," + margin.top + ")")
+
+      // speed of collapse and delcared root to be the premade template
+      let i = 0,
+          duration = 1300,
+          root = templateStructured
+
+      // declares a tree layout and assigns the size
+      let treemap = d3.tree().size([400, 500]);
+
 
 
 
