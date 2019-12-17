@@ -1,7 +1,8 @@
 {
-  "name": "Svelte Tool",
-  "version": "1.0",
-  "description": "Svelte application monitoring and debugging",
+  "name": "Svelte Sight",
+  "version": "1.0.0",
+  "description": "Svelte component hierarchy, state, and props visualizer",
+  "content_security_policy":"script-src 'self' https://d3js.org/d3.v4.min.js; object-src 'self'",
   "permissions": [
     "tabs",
     "activeTab", 
