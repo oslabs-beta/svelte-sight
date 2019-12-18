@@ -194,6 +194,19 @@
               createTree(arr);
             }
           }
+
+          // This is where logic should be placed for anything dependent on this async operation
+          if (i === componentNames.length - 1) {
+            
+            componentTree = unorderedListOfNodes[0];
+            unorderedListOfNodes.shift();
+            createTree(unorderedListOfNodes);
+
+            const root = document.getElementById('states-root');
+            const p = document.createElement('pre');
+            p.textContent += JSON.stringify(componentTree, null, 3);
+            root.appendChild(p);
+          }
           i += 1;
         }
       })
