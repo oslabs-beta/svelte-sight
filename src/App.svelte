@@ -138,6 +138,75 @@
             }
           }
           createNode();
+
+
+
+
+          function createTree(arr) {
+            for (let j = 0; j < arr.length; j += 1) {
+              let success = 0;
+
+              function searchTree(tree, keyToSearchFor, valToSubstituteIfKeyIsFound) {
+                // console.log('componentTree: ', componentTree)
+                // console.log('tree: ', tree)
+                for(let key in tree) {
+                  // console.log(`${key} === ${keyToSearchFor}?`)
+                  if (key === keyToSearchFor) {
+                      tree[key] = valToSubstituteIfKeyIsFound;
+                      arr.splice(j, 1);
+                      success += 1;
+                      return true;
+                  }
+                  if (Object.entries(tree[key]).length !== 0 && searchTree(tree[key], keyToSearchFor, valToSubstituteIfKeyIsFound)) {
+                    return true;
+                  }
+                }
+                return false;
+              }
+
+              for (let key in arr[j]) {
+
+                // if the value of a key in the object in the unorderedArray is not null (an object and therefore has dependencies)
+                if (Object.entries(arr[j][key]).length !== 0) {  // testing top-most component (second level)
+                  for (let keyOfKey in arr[j][key]) {
+                    for(let masterKey in componentTree) {
+                      if (keyOfKey === masterKey) {
+                        arr[j][key][keyOfKey] = componentTree[masterKey]
+                        componentTree = arr[j];
+                        arr.splice(j, 1);
+                        success += 1;
+                      }
+                    }
+                  }
+                }
+              }
+              for (let key in arr[j]) {
+                if (!success) {
+                  searchTree(componentTree, key, arr[j][key])
+                }
+              }
+              if (success) {
+                j -= success;
+                success = 0;
+              }
+            }
+            if (arr.length !== 0) {
+              createTree(arr);
+            }
+          }
+
+          // This is where logic should be placed for anything dependent on this async operation
+          if (i === componentNames.length - 1) {
+            
+            componentTree = unorderedListOfNodes[0];
+            unorderedListOfNodes.shift();
+            createTree(unorderedListOfNodes);
+
+            const root = document.getElementById('states-root');
+            const p = document.createElement('pre');
+            p.textContent += JSON.stringify(componentTree, null, 3);
+            root.appendChild(p);
+          }
           i += 1;
         }
       })
