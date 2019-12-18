@@ -147,10 +147,10 @@
               let success = 0;
 
               function searchTree(tree, keyToSearchFor, valToSubstituteIfKeyIsFound) {
-                // console.log('componentTree: ', componentTree)
-                // console.log('tree: ', tree)
+           
+             
                 for(let key in tree) {
-                  // console.log(`${key} === ${keyToSearchFor}?`)
+                  
                   if (key === keyToSearchFor) {
                       tree[key] = valToSubstituteIfKeyIsFound;
                       arr.splice(j, 1);
@@ -361,6 +361,119 @@
       let treemap = d3.tree().size([400, 500]);
 
       // Assigns parent, children, height, depth
+    //////////////////////////////////////////////////////////////////////////////
+    ///Collapsible tree
+
+    new_root = d3.hierarchy(templateStructured);
+      new_root.x0 = 0;
+      new_root.y0 = 0;
+      updating(new_root);
+      function updating(source) {
+
+  // Compute the flattened node list.
+  let nodes = new_root.descendants();
+
+  let height = Math.max(500, nodes.length * barHeight + margin.top + margin.bottom);
+
+  d3.select("svg").transition()
+      .duration(duration)
+      .attr("height", height);
+
+  d3.select(self.frameElement).transition()
+      .duration(duration)
+      .style("height", height + "px");
+
+  // Compute the "layout"
+  let index = -1;
+  new_root.eachBefore(function(n) {
+    n.x = ++index * barHeight;
+    n.y = n.depth * 20;
+  });
+
+  // Update the nodes…
+  let node = svg.selectAll(".node")
+    .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+  let nodeEnter = node.enter().append("g")
+      .attr("class", "node")
+      .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+      .style("opacity", 0);
+
+  // Enter any new nodes at the parent's previous position.
+  nodeEnter.append("rect")
+      .attr("y", -barHeight / 2)
+      .attr("height", barHeight)
+      .attr("width", barWidth)
+      .style("fill", color)
+      .on("click", click)
+      .on('mouseover', function(d) {
+             let statesRendered = document.createElement('pre')
+            let propsRendered = document.createElement('pre')
+            statesRendered.innerText = `States for ${d.data.id} : ${JSON.stringify(d.data.data.data.State, null, 2)}`
+            document.getElementById('states-root').appendChild(statesRendered)
+            propsRendered.innerText = `Props for ${d.data.id} :  ${JSON.stringify(d.data.data.data.Props, null, 2)}`
+            document.getElementById('states-root').appendChild(propsRendered)
+          })
+          .on("mouseout", function() {
+          // Remove the info text on mouse out.
+          let rendered = document.querySelector('pre')
+          document.getElementById('states-root').removeChild(rendered)
+        });
+
+  nodeEnter.append("text")
+      .attr("dy", 3.5)
+      .attr("dx", 5.5)
+      .text(function(d) { return d.data.id; });
+
+  // Transition nodes to their new position.
+  nodeEnter.transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+      .style("opacity", 1);
+
+  node.transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+      .style("opacity", 1)
+    .select("rect")
+      .style("fill", color);
+
+  // Transition exiting nodes to the parent's new position.
+  node.exit().transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+      .style("opacity", 0)
+      .remove();
+
+  
+    // Stash the old positions for transition.
+    new_root.each(function(d) {
+      d.x0 = d.x;
+      d.y0 = d.y;
+    });
+  }
+
+    // Toggle children on click.
+  function click(d) {
+    if (d.children) {
+      d._children = d.children;
+      d.children = null;
+    } else {
+      d.children = d._children;
+      d._children = null;
+    }
+    updating(d);
+  }
+
+  function color(d) {
+    return d._children ? "#3182bd" : d.children ? "#c6dbef" : "#fd8d3c";
+  }
+
+
+
+
+///End of collapsible
+//////////////////////////////////////////////////////////////////////////////////
       root = d3.hierarchy(templateStructured, function(d) { return d.children; });
       root.x0 = height / 2;
       root.y0 = 0;
@@ -385,8 +498,7 @@
         let treeData = treemap(root);
 
         // Compute the new tree layout.
-        let nodes = treeData.descendants(),
-            links = treeData.descendants().slice(1);
+        let links = treeData.descendants().slice(1);
 
         // Normalize for fixed-depth.
         nodes.forEach(function(d){ d.y = d.depth * 70});
