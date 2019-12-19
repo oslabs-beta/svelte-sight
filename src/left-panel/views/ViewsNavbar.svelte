@@ -48,6 +48,7 @@
     const viewsRoot = document.getElementById('views-root');
     const statesRoot = document.getElementById('states-root');
     const propsRoot = document.getElementById('props-root');
+    const chartRoot = document.getElementById('chart-root');
 
   	// globals
 		let i = 0;
@@ -460,8 +461,8 @@
   function chartRender(template) {
       /////////// Margin and svg for tree
       let i = 0,
-        duration = 1300,
-        root = template
+        duration = 400,
+        root = template;
 
    let margin = {top: 30, right: 0, bottom: 30, left: 0},
       width = 400 - margin.left - margin.right,
@@ -470,7 +471,7 @@
       // append the svg object to the body of the page
       // appends a 'group' element to 'svg'
       // moves the 'group' element to the top left margin
-      let svg = d3.select(viewsRoot).append("svg")
+      let svg = d3.select(chartRoot).append("svg")
         .attr("width", width)
         .attr("height", height)
         .attr('margin-left', '10px')
@@ -534,27 +535,24 @@
           .on('mouseover', function(d) {
             let statesRendered = document.createElement('pre');
             let propsRendered = document.createElement('pre');
+            statesRoot.innerHTML = '';
+            propsRoot.innerHTML = '';
             console.log('inside mouseover', d.data)
-            statesRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.State, null, 3));
+            statesRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.State, null, 2));
             statesRoot.appendChild(statesRendered);
             console.log('wtf is this hist,', Object.keys(d.data.data.data.Props))
-            propsRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.Props, null, 3));
+            propsRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.Props, null, 2));
             propsRoot.appendChild(propsRendered);
 
           })
-          .on("mouseout", function() {
-            // Remove the info text on mouse out.
-            statesRoot.innerHTML = '';
-            propsRoot.innerHTML = '';
-          });
 
         // Add Circle for the nodes
         nodeEnter.append('circle')
             .attr('class', 'node')
             .attr('r', 1e-6)
-            .style("fill", function(d) {
-                return d._children ? "lightsteelblue" : "#fff";
-            });
+            // .style("fill", function(d) {
+            //     return d._children ? "red" : "#fff";
+            // });
 
         // Add labels for the nodes
         nodeEnter.append('text')
@@ -562,12 +560,11 @@
             .attr("y", function(d) {
                 return d.children || d._children ? -20 : 20;
             })
-            
             .attr("text-anchor", function(d) {
                 return d.children || d._children ? "end" : "start";
             })
             .text(function(d) { return d.data.id; })
-            .style('fill', 'darkblue')
+            .style('fill', 'rgb(77, 166, 255)')
 
         // UPDATE
         let nodeUpdate = nodeEnter.merge(node);
@@ -583,7 +580,7 @@
         nodeUpdate.select('circle.node')
           .attr('r', 10)
           .style("fill", function(d) {
-              return d._children ? "lightsteelblue" : "#fff";
+              return d._children ? "rgb(244, 210, 221)" : "rgb(98, 145, 150)";
           })
           .attr('cursor', 'pointer');
 
@@ -758,17 +755,15 @@
       .on('mouseover', function(d) {
             let statesRendered = document.createElement('pre')
             let propsRendered = document.createElement('pre')
+            statesRoot.innerHTML = '';
+            propsRoot.innerHTML = '';
             console.log('inside mouseover', d.data)
-            statesRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.State, null, 3));
+            statesRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.State, null, 2));
             statesRoot.appendChild(statesRendered)
             console.log('wtf is this hist,', Object.keys(d.data.data.data.Props))
-            propsRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.Props, null, 3));
+            propsRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.Props, null, 2));
             propsRoot.appendChild(propsRendered)
       })
-      .on("mouseout", function() {
-        statesRoot.innerHTML = '';
-        propsRoot.innerHTML = '';
-      });
 
   nodeEnter.append("text")
       .attr("dy", 3.5)
@@ -821,21 +816,26 @@
     }
     ///////end of collapsible
   }
-
+  // end treeRender function
 
     switch (tab) {
       case 'tree':
         viewsRoot.innerHTML = '';
+        chartRoot.innerHTML = '';
         treeRender(templateStructured);
         break;
       case 'chart':
         viewsRoot.innerHTML = '';
+        chartRoot.innerHTML = '';
         chartRender(templateStructured);
         break;
       case 'raw':
         viewsRoot.innerHTML = '';
+        chartRoot.innerHTML = '';
+        statesRoot.innerHTML = '';
+        propsRoot.innerHTML = '';
         const pre = document.createElement('pre');
-        const prettyJSON = JSON.stringify(componentTree, null, 3);
+        const prettyJSON = JSON.stringify(componentTree, null, 2);
         pre.innerHTML = syntaxHighlight(prettyJSON);
         viewsRoot.appendChild(pre);
         break;
