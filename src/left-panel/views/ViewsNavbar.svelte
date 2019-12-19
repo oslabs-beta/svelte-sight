@@ -48,6 +48,7 @@
     const viewsRoot = document.getElementById('views-root');
     const statesRoot = document.getElementById('states-root');
     const propsRoot = document.getElementById('props-root');
+    const chartRoot = document.getElementById('chart-root');
 
   	// globals
 		let i = 0;
@@ -460,8 +461,8 @@
   function chartRender(template) {
       /////////// Margin and svg for tree
       let i = 0,
-        duration = 1300,
-        root = template
+        duration = 600,
+        root = template;
 
    let margin = {top: 30, right: 0, bottom: 30, left: 0},
       width = 400 - margin.left - margin.right,
@@ -470,7 +471,7 @@
       // append the svg object to the body of the page
       // appends a 'group' element to 'svg'
       // moves the 'group' element to the top left margin
-      let svg = d3.select(viewsRoot).append("svg")
+      let svg = d3.select(chartRoot).append("svg")
         .attr("width", width)
         .attr("height", height)
         .attr('margin-left', '10px')
@@ -821,19 +822,22 @@
     }
     ///////end of collapsible
   }
-
+  // end treeRender function
 
     switch (tab) {
       case 'tree':
         viewsRoot.innerHTML = '';
+        chartRoot.innerHTML = '';
         treeRender(templateStructured);
         break;
       case 'chart':
         viewsRoot.innerHTML = '';
+        chartRoot.innerHTML = '';
         chartRender(templateStructured);
         break;
       case 'raw':
         viewsRoot.innerHTML = '';
+        chartRoot.innerHTML = '';
         const pre = document.createElement('pre');
         const prettyJSON = JSON.stringify(componentTree, null, 3);
         pre.innerHTML = syntaxHighlight(prettyJSON);
