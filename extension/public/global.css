@@ -64,8 +64,8 @@ pre {
 	padding: 5px; 
 	margin: 5px;
 }
-.string { color: green; }
-.number { color: darkorange; }
-.boolean { color: blue; }
+.string { color: rgb(250, 187, 45); }
+.number { color: rgb(132, 222, 2); }
+.boolean { color: rgb(238, 106, 50); }
 .null { color: magenta; }
-.key { color: red; }
+.key { color: rgb(74, 174, 186); }
