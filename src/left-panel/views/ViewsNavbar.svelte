@@ -1,5 +1,18 @@
 <script>
-  import svelte from 'svelte/compiler'
+  import svelte from 'svelte/compiler';
+
+  // DevTools Page Connection to Background
+  const backgroundPageConnection = chrome.runtime.connect({
+    name: 'panel'
+  });
+
+  backgroundPageConnection.postMessage({
+    name: 'init',
+    tabId: chrome.devtools.inspectedWindow.tabId
+  }); 
+  //// 
+
+
 
   // Conditional rendering 
   const getData = (tab) => { 
