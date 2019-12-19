@@ -1,5 +1,5 @@
 chrome.devtools.panels.create(
-  'Svelte Tool',
+  'Svelte Sight',
   null,
   'panel.html',
   (panel) => {}
