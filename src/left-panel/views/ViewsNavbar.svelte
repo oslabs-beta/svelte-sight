@@ -1,6 +1,9 @@
 <script>
   import svelte from 'svelte/compiler';
 
+  // Refresh page
+  let refreshPage = true;
+
   // DevTools Page Connection to Background
   const backgroundPageConnection = chrome.runtime.connect({
     name: 'panel'
@@ -14,6 +17,7 @@
   backgroundPageConnection.onMessage.addListener(() => {
     console.log('in backgroundPageConnection onMessage App.svelte');
     getData();
+    refreshPage = false;
   });
   //// 
 
@@ -848,11 +852,33 @@
   <button on:click={() => getData('tree')}>Tree</button>
   <button on:click={() => getData('chart')}>Chart</button>
   <button on:click={() => getData('raw')}>Raw</button>
+
+  {#if refreshPage}
+    <div id='load-screen'>
+      <div id='refresh'>Please refresh your Svelte application</div>
+    </div>
+  {/if}
 </div>
 
 <style>
   #views-navbar {
     background-color: rgb(53, 60, 69);
     border-bottom: 1px solid rgb(70, 80, 90);
+  }
+
+  #load-screen {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: rgb(25, 25, 25);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  #refresh {
+    color: white;
+    font-size: 1.25rem;
   }
 </style>
