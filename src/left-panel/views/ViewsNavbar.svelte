@@ -10,6 +10,11 @@
     name: 'init',
     tabId: chrome.devtools.inspectedWindow.tabId
   }); 
+
+  backgroundPageConnection.onMessage.addListener(() => {
+    console.log('in backgroundPageConnection onMessage App.svelte');
+    getData();
+  });
   //// 
 
 
