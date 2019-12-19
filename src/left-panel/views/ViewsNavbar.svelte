@@ -17,6 +17,26 @@
   });
   //// 
 
+  // Function to color code JSON objects in states panel
+  function syntaxHighlight(json) {
+    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+        var cls = 'number';
+        if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+                cls = 'key';
+            } else {
+                cls = 'string';
+            }
+        } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+        } else if (/null/.test(match)) {
+            cls = 'null';
+        }
+        return '<span class="' + cls + '">' + match + '</span>';
+    });
+  }
+
 
 
   // Conditional rendering 
@@ -250,10 +270,12 @@
 
               console.log('D3PreTree', D3PreTree);  // For D3
 
-              const root = document.getElementById('states-root');
-              const p = document.createElement('pre');
-              p.textContent += JSON.stringify(componentTree, null, 3);
-              root.appendChild(p);
+              // Raw Tab
+              statesRoot.innerHTML = '';
+              const pre = document.createElement('pre');
+              const prettyJSON = JSON.stringify(componentTree, null, 3);
+              pre.innerHTML = syntaxHighlight(prettyJSON);
+              statesRoot.appendChild(pre);
 
               //////////////////// TESTING HIDDEN STATE //////////////////
               // console.log(componentTree['<App />'].hasOwnProperty('State'))
@@ -642,22 +664,21 @@
           })
           .on('click', click)
           .on('mouseover', function(d) {
-            let statesRendered = document.createElement('pre')
-            let propsRendered = document.createElement('pre')
+            let statesRendered = document.createElement('pre');
+            let propsRendered = document.createElement('pre');
             console.log('inside mouseover', d.data)
-            statesRendered.innerText = `States for ${d.data.id} : ${JSON.stringify(d.data.data.data.State, null, 2)}`
-            document.getElementById('states-root').appendChild(statesRendered)
+            statesRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.State, null, 3));
+            statesRoot.appendChild(statesRendered);
             console.log('wtf is this hist,', Object.keys(d.data.data.data.Props))
-            propsRendered.innerText = `Props for ${d.data.id} :  ${JSON.stringify(d.data.data.data.Props, null, 2)}`
-            document.getElementById('states-root').appendChild(propsRendered)
+            propsRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.Props, null, 3));
+            propsRoot.appendChild(propsRendered);
 
           })
           .on("mouseout", function() {
-          // Remove the info text on mouse out.
-          let rendered = document.querySelectorAll('pre')
-          // console.log(typeof rendered)
-          document.getElementById('states-root').innerHTML = ''
-        });
+            // Remove the info text on mouse out.
+            statesRoot.innerHTML = '';
+            propsRoot.innerHTML = '';
+          });
 
         // Add Circle for the nodes
         nodeEnter.append('circle')
