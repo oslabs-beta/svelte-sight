@@ -1,6 +1,9 @@
 <script>
   import svelte from 'svelte/compiler';
 
+  // Refresh page
+  let refreshPage = true;
+
   // DevTools Page Connection to Background
   const backgroundPageConnection = chrome.runtime.connect({
     name: 'panel'
@@ -14,10 +17,11 @@
   backgroundPageConnection.onMessage.addListener(() => {
     console.log('in backgroundPageConnection onMessage App.svelte');
     getData();
+    refreshPage = false;
   });
   //// 
 
-  // Function to color code JSON objects in states panel
+  // Function to color code JSON objects
   function syntaxHighlight(json) {
     json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
@@ -45,7 +49,7 @@
     const statesRoot = document.getElementById('states-root');
     const propsRoot = document.getElementById('props-root');
 
-  		 // globals
+  	// globals
 		let i = 0;
     const componentNames = [];
     const D3PreTree = [];
@@ -62,8 +66,6 @@
           if (source) {
             
             const ast = svelte.parse(source);
-
-
 
 
             function compositeDataTypeFoundInAST(node) {
@@ -271,12 +273,13 @@
               console.log('D3PreTree', D3PreTree);  // For D3
 
               // Raw Tab
-              statesRoot.innerHTML = '';
-              const pre = document.createElement('pre');
-              const prettyJSON = JSON.stringify(componentTree, null, 3);
-              pre.innerHTML = syntaxHighlight(prettyJSON);
-              statesRoot.appendChild(pre);
-
+              // if (tab === 'raw') {
+              //   viewsRoot.innerHTML = '';
+              //   const pre = document.createElement('pre');
+              //   const prettyJSON = JSON.stringify(componentTree, null, 3);
+              //   pre.innerHTML = syntaxHighlight(prettyJSON);
+              //   viewsRoot.appendChild(pre);
+              // }
               //////////////////// TESTING HIDDEN STATE //////////////////
               // console.log(componentTree['<App />'].hasOwnProperty('State'))
               // if (componentTree['<App />'].hasOwnProperty('State')) {
@@ -289,8 +292,6 @@
             i += 1
         }})
       })
-
-
 
 
 
@@ -310,6 +311,7 @@
           
         })
      }
+
 
   setTimeout(() => {
       
@@ -453,23 +455,13 @@
       console.log('seee', templateStructured)
 
 
-      //D3 rendering
-      
-//////Margin and svg for collapsible
-    // let margin = {top: 30, right: 20, bottom: 30, left: 20},
-    //     width = 480,
-    //     barHeight = 20,
-    //     barWidth = (width - margin.left - margin.right) * 0.8;
-       
-   
-    //   let svg = d3.select('#tree-root').append('svg')
-    //   .attr('width', 400).attr('height', 600)
-    //   .append('g').attr('transform', 'translate(0, 50)');
-    
-/////////// Margin and svg for tree
+
+  //D3 rendering
+  function chartRender(template) {
+      /////////// Margin and svg for tree
       let i = 0,
-          duration = 1300,
-          root = templateStructured
+        duration = 1300,
+        root = template
 
    let margin = {top: 30, right: 0, bottom: 30, left: 0},
       width = 400 - margin.left - margin.right,
@@ -479,141 +471,17 @@
       // appends a 'group' element to 'svg'
       // moves the 'group' element to the top left margin
       let svg = d3.select(viewsRoot).append("svg")
-          .attr("width", width)
-          .attr("height", height)
-          .attr('margin-left', '10px')
+        .attr("width", width)
+        .attr("height", height)
+        .attr('margin-left', '10px')
         .append("g")
-          .attr("transform", "translate("
-                + -20 + "," + margin.top + ")")
+        .attr("transform", "translate("
+              + -20 + "," + margin.top + ")")
 
       // declares a tree layout and assigns the size
       let treemap = d3.tree().size([400, 500]);
       console.log('treemap is', treemap)
 
-/////// start of collapsible
-  //     let new_root;
-
-  //     let diagonal = d3.linkHorizontal()
-  //       .x(function(d) { return d.y; })
-  //       .y(function(d) { return d.x; });
-
-  
-
-      
-  //     new_root = d3.hierarchy(templateStructured);
-  //     new_root.x0 = 0;
-  //     new_root.y0 = 0;
-  //     update(new_root);
-  //     function update(source) {
-
-  // // Compute the flattened node list.
-  // let nodes = new_root.descendants();
-
-  // let height = Math.max(500, nodes.length * barHeight + margin.top + margin.bottom);
-
-  // d3.select("svg").transition()
-  //     .duration(duration)
-  //     .attr("height", height);
-
-  // d3.select(self.frameElement).transition()
-  //     .duration(duration)
-  //     .style("height", height + "px");
-
-  // // Compute the "layout". TODO https://github.com/d3/d3-hierarchy/issues/67
-  // let index = -1;
-  // new_root.eachBefore(function(n) {
-  //   n.x = ++index * barHeight;
-  //   n.y = n.depth * 20;
-  // });
-
-  // // Update the nodes…
-  // let node = svg.selectAll(".node")
-  //   .data(nodes, function(d) { return d.id || (d.id = ++i); });
-
-  // let nodeEnter = node.enter().append("g")
-  //     .attr("class", "node")
-  //     .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-  //     .style("opacity", 0);
-
-  // // Enter any new nodes at the parent's previous position.
-  // nodeEnter.append("rect")
-  //     .attr("y", -barHeight / 2)
-  //     .attr("height", barHeight)
-  //     .attr("width", barWidth)
-  //     .style("fill", color)
-  //     .on("click", click)
-  //     .on('mouseover', function(d) {
-  //           let statesRendered = document.createElement('pre')
-  //           let propsRendered = document.createElement('pre')
-  //           console.log('inside mouseover', d.data)
-  //           statesRendered.innerText = `States for ${d.data.id} : ${JSON.stringify(d.data.data.data.State, null, 2)}`
-  //           document.getElementById('states-root').appendChild(statesRendered)
-  //           console.log('wtf is this hist,', Object.keys(d.data.data.data.Props))
-  //           propsRendered.innerText = `Props for ${d.data.id} :  ${JSON.stringify(d.data.data.data.Props, null, 2)}`
-  //           document.getElementById('states-root').appendChild(propsRendered)
-
-
-
-
-  //         })
-  //         .on("mouseout", function() {
-  //         // Remove the info text on mouse out.
-  //        let rendered = document.querySelectorAll('pre')
-  //         // console.log(typeof rendered)
-  //         document.getElementById('states-root').innerHTML = ''
-  //       });
-
-  // nodeEnter.append("text")
-  //     .attr("dy", 3.5)
-  //     .attr("dx", 5.5)
-  //     .text(function(d) { return d.data.id; });
-
-  // // Transition nodes to their new position.
-  // nodeEnter.transition()
-  //     .duration(duration)
-  //     .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
-  //     .style("opacity", 1);
-
-  // node.transition()
-  //     .duration(duration)
-  //     .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
-  //     .style("opacity", 1)
-  //   .select("rect")
-  //     .style("fill", color);
-
-  // // Transition exiting nodes to the parent's new position.
-  // node.exit().transition()
-  //     .duration(duration)
-  //     .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
-  //     .style("opacity", 0)
-  //     .remove();
-
-
-
-  //   // Stash the old positions for transition.
-  //   new_root.each(function(d) {
-  //     d.x0 = d.x;
-  //     d.y0 = d.y;
-  //   });
-  // }
-
-  //   // Toggle children on click.
-  // function click(d) {
-  //   if (d.children) {
-  //     d._children = d.children;
-  //     d.children = null;
-  //   } else {
-  //     d.children = d._children;
-  //     d._children = null;
-  //   }
-  //   update(d);
-  // }
-
-  // function color(d) {
-  //   return d._children ? "#3182bd" : d.children ? "#c6dbef" : "#fd8d3c";
-  // }
-
-  ///////end of collapsible
 
   ///////start of tree
       // Assigns parent, children, height, depth
@@ -812,42 +680,184 @@
           update(d);
         }
       }
-      ///////// end of tree
-      console.log('bigData', bigData)
-    }, 100)
+  }
+  // end of chartRender function
+
+
+
+  function treeRender(template) {
+    let duration = 400;
+    //////Margin and svg for collapsible
+    let margin = {top: 30, right: 20, bottom: 30, left: 20},
+        width = 480,
+        barHeight = 20,
+        barWidth = (width - margin.left - margin.right) * 0.8;
+       
+   
+      let svg = d3.select(viewsRoot).append('svg')
+      .attr('width', 400).attr('height', 600)
+      .append('g').attr('transform', 'translate(0, 50)');
+    
+
+      // declares a tree layout and assigns the size
+      let treemap = d3.tree().size([400, 500]);
+      console.log('treemap is', treemap)
+
+/////// start of collapsible
+      let new_root;
+
+      let diagonal = d3.linkHorizontal()
+        .x(function(d) { return d.y; })
+        .y(function(d) { return d.x; });
+
+  
+      
+      new_root = d3.hierarchy(template);
+      new_root.x0 = 0;
+      new_root.y0 = 0;
+      update(new_root);
+      function update(source) {
+
+  // Compute the flattened node list.
+  let nodes = new_root.descendants();
+
+  let height = Math.max(500, nodes.length * barHeight + margin.top + margin.bottom);
+
+  d3.select("svg").transition()
+      .duration(duration)
+      .attr("height", height);
+
+  d3.select(self.frameElement).transition()
+      .duration(duration)
+      .style("height", height + "px");
+
+  // Compute the "layout". TODO https://github.com/d3/d3-hierarchy/issues/67
+  let index = -1;
+  new_root.eachBefore(function(n) {
+    n.x = ++index * barHeight;
+    n.y = n.depth * 20;
+  });
+
+  // Update the nodes…
+  let node = svg.selectAll(".node")
+    .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+  let nodeEnter = node.enter().append("g")
+      .attr("class", "node")
+      .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+      .style("opacity", 0);
+
+  // Enter any new nodes at the parent's previous position.
+  nodeEnter.append("rect")
+      .attr('cursor', 'pointer')
+      .attr("y", -barHeight / 2)
+      .attr("height", barHeight)
+      .attr("width", barWidth)
+      .style("fill", color)
+      .on("click", click)
+      .on('mouseover', function(d) {
+            let statesRendered = document.createElement('pre')
+            let propsRendered = document.createElement('pre')
+            console.log('inside mouseover', d.data)
+            statesRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.State, null, 3));
+            statesRoot.appendChild(statesRendered)
+            console.log('wtf is this hist,', Object.keys(d.data.data.data.Props))
+            propsRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.Props, null, 3));
+            propsRoot.appendChild(propsRendered)
+      })
+      .on("mouseout", function() {
+        statesRoot.innerHTML = '';
+        propsRoot.innerHTML = '';
+      });
+
+  nodeEnter.append("text")
+      .attr("dy", 3.5)
+      .attr("dx", 5.5)
+      .text(function(d) { return d.data.id; });
+
+  // Transition nodes to their new position.
+  nodeEnter.transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+      .style("opacity", 1);
+
+  node.transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+      .style("opacity", 1)
+      .select("rect")
+      .style("fill", color);
+
+  // Transition exiting nodes to the parent's new position.
+  node.exit().transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+      .style("opacity", 0)
+      .remove();
+
+
+
+    // Stash the old positions for transition.
+    new_root.each(function(d) {
+      d.x0 = d.x;
+      d.y0 = d.y;
+    });
+  }
+
+    // Toggle children on click.
+  function click(d) {
+    if (d.children) {
+      d._children = d.children;
+      d.children = null;
+    } else {
+      d.children = d._children;
+      d._children = null;
+    }
+    update(d);
+  }
+
+    function color(d) {
+      return d._children ? "#3182bd" : d.children ? "#c6dbef" : "#fd8d3c";
+    }
+    ///////end of collapsible
+  }
+
+
+    switch (tab) {
+      case 'tree':
+        viewsRoot.innerHTML = '';
+        treeRender(templateStructured);
+        break;
+      case 'chart':
+        viewsRoot.innerHTML = '';
+        chartRender(templateStructured);
+        break;
+      case 'raw':
+        viewsRoot.innerHTML = '';
+        const pre = document.createElement('pre');
+        const prettyJSON = JSON.stringify(componentTree, null, 3);
+        pre.innerHTML = syntaxHighlight(prettyJSON);
+        viewsRoot.appendChild(pre);
+        break;
+    }
+
+  }, 100)
 })
 		// end D3 Tree logic
-
-    // switch (tab) {
-    //   case 'data':
-    //     viewsRoot.innerText = 'Data';
-    //     statesRoot.innerText = 'Data';
-    //     propsRoot.innerText = 'Data';
-    //     break;
-    //   case 'tree':
-    //     viewsRoot.innerText = 'tree';
-    //     statesRoot.innerText = 'tree';
-    //     propsRoot.innerText = 'tree';
-    //     break;
-    //   case 'chart':
-    //     viewsRoot.innerText = 'chart';
-    //     statesRoot.innerText = 'chart';
-    //     propsRoot.innerText = 'chart';
-    //     break;
-    //   case 'raw':
-    //     viewsRoot.innerText = 'raw';
-    //     statesRoot.innerText = 'raw';
-    //     propsRoot.innerText = 'raw';
-    //     break;
-    // }
 }
 </script>
 
 <div id="views-navbar">
-  <button on:click={() => getData('data')}>Data</button>
   <button on:click={() => getData('tree')}>Tree</button>
   <button on:click={() => getData('chart')}>Chart</button>
   <button on:click={() => getData('raw')}>Raw</button>
+
+  {#if refreshPage}
+    <div id='load-screen'>
+      <div id='refresh'>Please refresh your Svelte application</div>
+      <div class="loadingio-spinner-interwind-cjqvhe7g9xe"><div class="ldio-qgqa75k37hd"><div><div><div><div></div></div></div><div><div><div></div></div></div></div></div></div>
+    </div>
+  {/if}
 </div>
 
 <style>
@@ -855,4 +865,75 @@
     background-color: rgb(53, 60, 69);
     border-bottom: 1px solid rgb(70, 80, 90);
   }
+
+  #load-screen {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: rgb(25, 25, 25);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  #refresh {
+    color: white;
+    font-size: 1.25rem;
+  }
+
+  /* Loading Icon */
+  @keyframes ldio-qgqa75k37hd-r {
+    0%, 100% { animation-timing-function: cubic-bezier(0.2 0 0.8 0.8) }
+    50% { animation-timing-function: cubic-bezier(0.2 0.2 0.8 1) }
+    0% { transform: rotate(0deg) }
+    50% { transform: rotate(180deg) }
+    100% { transform: rotate(360deg) }
+  }
+  @keyframes ldio-qgqa75k37hd-s {
+    0%, 100% { animation-timing-function: cubic-bezier(0.2 0 0.8 0.8) }
+    50% { animation-timing-function: cubic-bezier(0.2 0.2 0.8 1) }
+    0% { transform: translate(-19px,-19px) scale(0) }
+    50% { transform: translate(-19px,-19px) scale(1) }
+    100% { transform: translate(-19px,-19px) scale(0) }
+  }
+  .ldio-qgqa75k37hd > div { transform: translate(0px,-9.5px) }
+  .ldio-qgqa75k37hd > div > div {
+    animation: ldio-qgqa75k37hd-r 1.6949152542372878s linear infinite;
+    transform-origin: 50px 50px;
+  }
+  .ldio-qgqa75k37hd > div > div > div {
+    position: absolute;
+    transform: translate(50px, 38.6px);
+  }
+  .ldio-qgqa75k37hd > div > div > div > div {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #f80000;
+    animation: ldio-qgqa75k37hd-s 1.6949152542372878s linear infinite;
+  }
+  .ldio-qgqa75k37hd > div > div:last-child {
+    animation-delay: -0.8474576271186439s;
+  }
+  .ldio-qgqa75k37hd > div > div:last-child > div > div {
+    animation-delay: -0.8474576271186439s;
+    background: #faa44a;
+  }
+  .loadingio-spinner-interwind-cjqvhe7g9xe {
+    width: 94px;
+    height: 94px;
+    display: inline-block;
+    overflow: hidden;
+    background: none;
+  }
+  .ldio-qgqa75k37hd {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform: translateZ(0) scale(0.94);
+    backface-visibility: hidden;
+    transform-origin: 0 0; /* see note above */
+  }
+  .ldio-qgqa75k37hd div { box-sizing: content-box; }
 </style>
