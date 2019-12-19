@@ -21,7 +21,7 @@
   });
   //// 
 
-  // Function to color code JSON objects in states panel
+  // Function to color code JSON objects
   function syntaxHighlight(json) {
     json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
@@ -49,7 +49,7 @@
     const statesRoot = document.getElementById('states-root');
     const propsRoot = document.getElementById('props-root');
 
-  		 // globals
+  	// globals
 		let i = 0;
     const componentNames = [];
     const D3PreTree = [];
@@ -275,12 +275,13 @@
               console.log('D3PreTree', D3PreTree);  // For D3
 
               // Raw Tab
-              statesRoot.innerHTML = '';
-              const pre = document.createElement('pre');
-              const prettyJSON = JSON.stringify(componentTree, null, 3);
-              pre.innerHTML = syntaxHighlight(prettyJSON);
-              statesRoot.appendChild(pre);
-
+              if (tab === 'raw') {
+                viewsRoot.innerHTML = '';
+                const pre = document.createElement('pre');
+                const prettyJSON = JSON.stringify(componentTree, null, 3);
+                pre.innerHTML = syntaxHighlight(prettyJSON);
+                viewsRoot.appendChild(pre);
+              }
               //////////////////// TESTING HIDDEN STATE //////////////////
               // console.log(componentTree['<App />'].hasOwnProperty('State'))
               // if (componentTree['<App />'].hasOwnProperty('State')) {
@@ -482,13 +483,14 @@
       // append the svg object to the body of the page
       // appends a 'group' element to 'svg'
       // moves the 'group' element to the top left margin
+    
       let svg = d3.select(viewsRoot).append("svg")
-          .attr("width", width)
-          .attr("height", height)
-          .attr('margin-left', '10px')
+        .attr("width", width)
+        .attr("height", height)
+        .attr('margin-left', '10px')
         .append("g")
-          .attr("transform", "translate("
-                + -20 + "," + margin.top + ")")
+        .attr("transform", "translate("
+              + -20 + "," + margin.top + ")")
 
       // declares a tree layout and assigns the size
       let treemap = d3.tree().size([400, 500]);
