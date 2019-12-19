@@ -18,6 +18,7 @@
 
   #chart-root-wrapper {
     display: flex;
-    justify-content: center
+    justify-content: center;
+    margin-top: 10px;
   }
 </style>

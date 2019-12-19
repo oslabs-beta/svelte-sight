@@ -553,9 +553,9 @@
         nodeEnter.append('circle')
             .attr('class', 'node')
             .attr('r', 1e-6)
-            .style("fill", function(d) {
-                return d._children ? "lightsteelblue" : "#fff";
-            });
+            // .style("fill", function(d) {
+            //     return d._children ? "red" : "#fff";
+            // });
 
         // Add labels for the nodes
         nodeEnter.append('text')
@@ -563,12 +563,11 @@
             .attr("y", function(d) {
                 return d.children || d._children ? -20 : 20;
             })
-            
             .attr("text-anchor", function(d) {
                 return d.children || d._children ? "end" : "start";
             })
             .text(function(d) { return d.data.id; })
-            .style('fill', 'darkblue')
+            .style('fill', 'rgb(77, 166, 255)')
 
         // UPDATE
         let nodeUpdate = nodeEnter.merge(node);
@@ -584,7 +583,7 @@
         nodeUpdate.select('circle.node')
           .attr('r', 10)
           .style("fill", function(d) {
-              return d._children ? "lightsteelblue" : "#fff";
+              return d._children ? "rgb(244, 210, 221)" : "rgb(98, 145, 150)";
           })
           .attr('cursor', 'pointer');
 
