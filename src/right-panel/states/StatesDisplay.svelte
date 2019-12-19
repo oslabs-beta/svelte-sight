@@ -10,4 +10,8 @@
     background-color: rgb(37, 42, 50);;
     overflow: auto;
   }
+
+  #states-root {
+    font-size: 1rem;
+  }
 </style>

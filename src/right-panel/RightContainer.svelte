@@ -11,7 +11,7 @@
 <style>
   #right-container {
     display: grid;
-    grid-template-rows: 60% 40%;
+    grid-template-rows: 70% 30%;
   }
 
   StatesContainer {
