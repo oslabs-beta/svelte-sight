@@ -535,6 +535,8 @@
           .on('mouseover', function(d) {
             let statesRendered = document.createElement('pre');
             let propsRendered = document.createElement('pre');
+            statesRoot.innerHTML = '';
+            propsRoot.innerHTML = '';
             console.log('inside mouseover', d.data)
             statesRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.State, null, 3));
             statesRoot.appendChild(statesRendered);
@@ -543,11 +545,6 @@
             propsRoot.appendChild(propsRendered);
 
           })
-          .on("mouseout", function() {
-            // Remove the info text on mouse out.
-            statesRoot.innerHTML = '';
-            propsRoot.innerHTML = '';
-          });
 
         // Add Circle for the nodes
         nodeEnter.append('circle')
@@ -758,6 +755,8 @@
       .on('mouseover', function(d) {
             let statesRendered = document.createElement('pre')
             let propsRendered = document.createElement('pre')
+            statesRoot.innerHTML = '';
+            propsRoot.innerHTML = '';
             console.log('inside mouseover', d.data)
             statesRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.State, null, 3));
             statesRoot.appendChild(statesRendered)
@@ -765,10 +764,6 @@
             propsRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.Props, null, 3));
             propsRoot.appendChild(propsRendered)
       })
-      .on("mouseout", function() {
-        statesRoot.innerHTML = '';
-        propsRoot.innerHTML = '';
-      });
 
   nodeEnter.append("text")
       .attr("dy", 3.5)
