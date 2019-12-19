@@ -856,6 +856,7 @@
   {#if refreshPage}
     <div id='load-screen'>
       <div id='refresh'>Please refresh your Svelte application</div>
+      <div class="loadingio-spinner-interwind-cjqvhe7g9xe"><div class="ldio-qgqa75k37hd"><div><div><div><div></div></div></div><div><div><div></div></div></div></div></div></div>
     </div>
   {/if}
 </div>
@@ -881,4 +882,59 @@
     color: white;
     font-size: 1.25rem;
   }
+
+  /* Loading Icon */
+  @keyframes ldio-qgqa75k37hd-r {
+    0%, 100% { animation-timing-function: cubic-bezier(0.2 0 0.8 0.8) }
+    50% { animation-timing-function: cubic-bezier(0.2 0.2 0.8 1) }
+    0% { transform: rotate(0deg) }
+    50% { transform: rotate(180deg) }
+    100% { transform: rotate(360deg) }
+  }
+  @keyframes ldio-qgqa75k37hd-s {
+    0%, 100% { animation-timing-function: cubic-bezier(0.2 0 0.8 0.8) }
+    50% { animation-timing-function: cubic-bezier(0.2 0.2 0.8 1) }
+    0% { transform: translate(-19px,-19px) scale(0) }
+    50% { transform: translate(-19px,-19px) scale(1) }
+    100% { transform: translate(-19px,-19px) scale(0) }
+  }
+  .ldio-qgqa75k37hd > div { transform: translate(0px,-9.5px) }
+  .ldio-qgqa75k37hd > div > div {
+    animation: ldio-qgqa75k37hd-r 1.6949152542372878s linear infinite;
+    transform-origin: 50px 50px;
+  }
+  .ldio-qgqa75k37hd > div > div > div {
+    position: absolute;
+    transform: translate(50px, 38.6px);
+  }
+  .ldio-qgqa75k37hd > div > div > div > div {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #f80000;
+    animation: ldio-qgqa75k37hd-s 1.6949152542372878s linear infinite;
+  }
+  .ldio-qgqa75k37hd > div > div:last-child {
+    animation-delay: -0.8474576271186439s;
+  }
+  .ldio-qgqa75k37hd > div > div:last-child > div > div {
+    animation-delay: -0.8474576271186439s;
+    background: #faa44a;
+  }
+  .loadingio-spinner-interwind-cjqvhe7g9xe {
+    width: 94px;
+    height: 94px;
+    display: inline-block;
+    overflow: hidden;
+    background: none;
+  }
+  .ldio-qgqa75k37hd {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform: translateZ(0) scale(0.94);
+    backface-visibility: hidden;
+    transform-origin: 0 0; /* see note above */
+  }
+  .ldio-qgqa75k37hd div { box-sizing: content-box; }
 </style>
