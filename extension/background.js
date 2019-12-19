@@ -26,3 +26,23 @@ chrome.runtime.onConnect.addListener((port) => {
     }
   });
 });
+
+
+// Receive message from content script and relay to the DevTools page for the current tab
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log('inside background onMessage');
+  // Messages from content scripts should have sender.tab set
+  if (sender.tab) {
+    const tabId = sender.tab.id;
+    if (tabId in connections) {
+      console.log('inside tabId in connections');
+      connections[tabId].postMessage(request);
+    } else {
+      console.log('Tab not found in connection list');
+    }
+  }
+  else {
+    console.log('sender.tab not defined');
+  }
+  return true;
+});
