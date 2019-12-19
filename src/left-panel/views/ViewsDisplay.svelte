@@ -16,6 +16,10 @@
     padding: 0 10px;
   }
 
+  #views-root {
+    font-size: 1.1rem;
+  }
+
   #chart-root-wrapper {
     display: flex;
     justify-content: center;

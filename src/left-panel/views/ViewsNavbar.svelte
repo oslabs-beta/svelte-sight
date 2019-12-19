@@ -461,7 +461,7 @@
   function chartRender(template) {
       /////////// Margin and svg for tree
       let i = 0,
-        duration = 600,
+        duration = 400,
         root = template;
 
    let margin = {top: 30, right: 0, bottom: 30, left: 0},
@@ -538,10 +538,10 @@
             statesRoot.innerHTML = '';
             propsRoot.innerHTML = '';
             console.log('inside mouseover', d.data)
-            statesRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.State, null, 3));
+            statesRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.State, null, 2));
             statesRoot.appendChild(statesRendered);
             console.log('wtf is this hist,', Object.keys(d.data.data.data.Props))
-            propsRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.Props, null, 3));
+            propsRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.Props, null, 2));
             propsRoot.appendChild(propsRendered);
 
           })
@@ -758,10 +758,10 @@
             statesRoot.innerHTML = '';
             propsRoot.innerHTML = '';
             console.log('inside mouseover', d.data)
-            statesRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.State, null, 3));
+            statesRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.State, null, 2));
             statesRoot.appendChild(statesRendered)
             console.log('wtf is this hist,', Object.keys(d.data.data.data.Props))
-            propsRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.Props, null, 3));
+            propsRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.Props, null, 2));
             propsRoot.appendChild(propsRendered)
       })
 
@@ -832,8 +832,10 @@
       case 'raw':
         viewsRoot.innerHTML = '';
         chartRoot.innerHTML = '';
+        statesRoot.innerHTML = '';
+        propsRoot.innerHTML = '';
         const pre = document.createElement('pre');
-        const prettyJSON = JSON.stringify(componentTree, null, 3);
+        const prettyJSON = JSON.stringify(componentTree, null, 2);
         pre.innerHTML = syntaxHighlight(prettyJSON);
         viewsRoot.appendChild(pre);
         break;
