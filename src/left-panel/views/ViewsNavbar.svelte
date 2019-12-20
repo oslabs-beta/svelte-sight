@@ -465,7 +465,7 @@
         nodeUpdate.select('circle.node')
           .attr('r', 10)
           .style("fill", function(d) {
-              return d._children ? "rgb(244, 210, 221)" : "rgb(98, 145, 150)";
+              return d._children ? "rgb(194, 160, 251)" : "rgb(16, 122, 117)";
           })
           .attr('cursor', 'pointer');
         // Remove any exiting nodes
@@ -548,11 +548,11 @@
     barHeight = 20;
 
   let i = 0,
-    duration = 500,
+    duration = 400,
     root;
 
   let nodeEnterTransition = d3.transition()
-    .duration(750)
+    .duration(300)
     .ease(d3.easeLinear);
 
 

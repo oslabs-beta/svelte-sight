@@ -17,6 +17,7 @@
   }
 
   #views-root {
+    margin-top: 10px;
     font-size: 1rem;
   }
 
