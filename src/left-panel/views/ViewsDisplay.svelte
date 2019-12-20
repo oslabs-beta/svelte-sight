@@ -17,7 +17,7 @@
   }
 
   #views-root {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 
   #chart-root-wrapper {
