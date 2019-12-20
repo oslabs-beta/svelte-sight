@@ -356,7 +356,7 @@
       // modified the data to show only Props keys for better user experience
       for (let i = 0; i < componentTemplate.length; i++) {
         if (!componentTemplate[i].hasOwnProperty('data')) {
-          componentTemplate[i].data = {State : 'No States', Props : 'No Props'}
+          componentTemplate[i].data = {State : 'No State', Props : 'No Props'}
         } else if (Object.keys(componentTemplate[i].data.Props).length === 0) {
           componentTemplate[i].data.Props = 'No Props';
         } else {
@@ -380,7 +380,7 @@
         root = template;
    let margin = {top: 30, right: 0, bottom: 30, left: 0},
       width = 400 - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
+      height = 700 - margin.top - margin.bottom;
       // append the svg object to the body of the page
       // appends a 'group' element to 'svg'
       // moves the 'group' element to the top left margin
