@@ -1,30 +1,30 @@
 <script>
-	export let name;
+  import svelte from 'svelte/compiler';
+  import ViewsContainer from './left-panel/ViewsContainer.svelte';
+  import RightContainer from './right-panel/RightContainer.svelte';
 </script>
 
+
 <main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+  <ViewsContainer />
+  <RightContainer />
 </main>
 
 <style>
 	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
+		height: 100%;
+		width: 100%;
+		margin: 0;
+		padding: 0;
+		display: grid;
+    grid-template-columns: minmax(0, 60%) minmax(0, 40%);
 	}
 
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
+	ViewsContainer {
+    grid-column: 1 / span 1;
 	}
 
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
+	RightContainer {
+    grid-column: 2 / span 1;
 	}
 </style>

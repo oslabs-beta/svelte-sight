@@ -1,0 +1,48 @@
+html, body {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	color: #333;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: Consolas, Courier, monospace;
+	color: white;
+}
+
+button {
+	color: white;
+	background-color: rgb(53, 60, 69);
+	outline: none;
+	border: none;
+	height: 34px;
+	width: 65px;
+	margin: 0;
+	float: left;
+	font-size: 15px;
+	font-family: Consolas, Courier, monospace;
+	box-sizing: border-box;
+}
+
+button:hover, button:active {
+	background-color: aliceblue;
+	color: black;
+}
+
+h2 {
+	font-weight: 500;
+}
+
+/* CSS for JSON color code */
+pre {
+	padding: 5px; 
+	margin: 5px;
+}
+.string { color: rgb(251, 227, 142); }
+.number { color: rgb(132, 222, 2); }
+.boolean { color: rgb(238, 106, 50); }
+.null { color: magenta; }
+.key { color: rgb(114, 180, 209); }
