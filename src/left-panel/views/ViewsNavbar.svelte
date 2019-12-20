@@ -465,7 +465,7 @@
         nodeUpdate.select('circle.node')
           .attr('r', 10)
           .style("fill", function(d) {
-              return d._children ? "rgb(194, 160, 251)" : "rgb(16, 122, 117)";
+              return d._children ? "rgb(244, 210, 221)" : "rgb(98, 145, 150)";
           })
           .attr('cursor', 'pointer');
         // Remove any exiting nodes
@@ -541,107 +541,141 @@
       }
   }
   // end of chartRender function
-  function treeRender(template) {
-    let duration = 400;
-    //////Margin and svg for collapsible
-    let margin = {top: 30, right: 20, bottom: 30, left: 20},
-        width = 480,
-        barHeight = 20,
-        barWidth = (width - margin.left - margin.right) * 0.8;
-       
-   
-      let svg = d3.select(viewsRoot).append('svg')
-      .attr('width', 400).attr('height', 600)
-      .append('g').attr('transform', 'translate(0, 50)');
-    
-      // declares a tree layout and assigns the size
-      let treemap = d3.tree().size([400, 500]);
-      console.log('treemap is', treemap)
-/////// start of collapsible
-      let new_root;
-      let diagonal = d3.linkHorizontal()
-        .x(function(d) { return d.y; })
-        .y(function(d) { return d.x; });
+  function treeRender(data){
+  let margin = {top: 10, right: 20, bottom: 30, left: 20},
+    width = 960,
+    height = 1000,
+    barHeight = 20;
+
+  let i = 0,
+    duration = 500,
+    root;
+
+  let nodeEnterTransition = d3.transition()
+    .duration(750)
+    .ease(d3.easeLinear);
+
+
+  let svg = d3.select(viewsRoot).append("svg")
+    .attr("width", width) // + margin.left + margin.right)
+    .attr("height",height)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
   
-      
-      new_root = d3.hierarchy(template);
-      new_root.x0 = 0;
-      new_root.y0 = 0;
-      update(new_root);
-      function update(source) {
-  // Compute the flattened node list.
-  let nodes = new_root.descendants();
-  let height = Math.max(500, nodes.length * barHeight + margin.top + margin.bottom);
-  d3.select("svg").transition()
-      .duration(duration)
+    root = d3.hierarchy(data);
+    root.x0 = 0;
+    root.y0 = 0;
+    update(root);
+
+
+
+  function update(source) {
+
+    // Compute the flattened node list.
+    var nodes = root.descendants();
+
+    var height = Math.max(500, nodes.length * barHeight + margin.top + margin.bottom);
+    
+    d3.select("svg").transition()
       .attr("height", height);
-  d3.select(self.frameElement).transition()
-      .duration(duration)
-      .style("height", height + "px");
-  // Compute the "layout". TODO https://github.com/d3/d3-hierarchy/issues/67
-  let index = -1;
-  new_root.eachBefore(function(n) {
-    n.x = ++index * barHeight;
-    n.y = n.depth * 20;
-  });
-  // Update the nodes…
-  let node = svg.selectAll(".node")
-    .data(nodes, function(d) { return d.id || (d.id = ++i); });
-  let nodeEnter = node.enter().append("g")
+
+    var index = -1;
+    root.eachBefore((n) => {
+      n.x = ++index * barHeight;
+      n.y = n.depth * 20;
+    });
+
+    // Update the nodes…
+    var node = svg.selectAll(".node")
+      .data(nodes, (d) => d.id || (d.id = ++i));
+
+    var nodeEnter = node.enter().append("g")
       .attr("class", "node")
-      .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-      .style("opacity", 0);
-  // Enter any new nodes at the parent's previous position.
-  nodeEnter.append("rect")
-      .attr('cursor', 'pointer')
-      .attr("y", -barHeight / 2)
-      .attr("height", barHeight)
-      .attr("width", barWidth)
-      .style("fill", 'rgb(37, 42, 50)')
+      .attr("transform", () => "translate(" + source.y0 + "," + source.x0 + ")")
       .on("click", click)
+    ;
+
+    // adding arrows
+    nodeEnter.append('text')
+      .attr('x', -20)
+      .attr('y', 2)
+      .attr('fill', 'grey')
+      .attr('class', 'arrow')
+      .attr('class', 'fas')
+      .attr('font-size', '12px')
+      .attr('cursor', 'pointer')
       .on('mouseover', function(d) {
-            let statesRendered = document.createElement('pre')
-            let propsRendered = document.createElement('pre')
+            let statesRendered = document.createElement('pre');
+            let propsRendered = document.createElement('pre');
             statesRoot.innerHTML = '';
             propsRoot.innerHTML = '';
-            console.log('inside mouseover', d.data)
             statesRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.State, null, 2));
-            statesRoot.appendChild(statesRendered)
-            console.log('wtf is this hist,', Object.keys(d.data.data.data.Props))
+            statesRoot.appendChild(statesRendered);
             propsRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.Props, null, 2));
-            propsRoot.appendChild(propsRendered)
-      })
-  nodeEnter.append("text")
+            propsRoot.appendChild(propsRendered);
+          })
+      .text((d) => d.children ? '\uf107' : d._children ? '\uf105' : "");
+
+    // adding file or folder
+    // nodeEnter.append('text')
+    //   .attr('x', -10)
+    //   .attr('y', 2)
+    //   .attr('fill', (d) => d.children || d._children ? 'white' : 'white')
+    //   .attr('class', 'fas')
+    //   .attr('font-size', '12px')
+    //   .text((d) => d.children || d._children ? '\uf07b' : '\uf15b');
+
+    // adding file or folder names
+    nodeEnter.append("text")
       .attr("dy", 3.5)
       .attr("dx", 5.5)
-      .style('fill', 'white')
+      .text((d) => d.data.id)
+      .style("fill","white")
+      .on('mouseover', function(d) {
+            d3.select(this).classed("selected", true);
+            let statesRendered = document.createElement('pre');
+            let propsRendered = document.createElement('pre');
+            statesRoot.innerHTML = '';
+            propsRoot.innerHTML = '';
+            statesRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.State, null, 2));
+            statesRoot.appendChild(statesRendered);
+            propsRendered.innerHTML = syntaxHighlight(JSON.stringify(d.data.data.data.Props, null, 2));
+            propsRoot.appendChild(propsRendered);
+          })
       .attr('cursor', 'pointer')
-      .on("click", click)
-      .text(function(d) { return d.data.id; });
-  // Transition nodes to their new position.
-  nodeEnter.transition()
-      .duration(duration)
-      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+      .on("mouseout", function (d) {
+        d3.selectAll(".selected").classed("selected", false);
+      });
+
+
+    // Transition nodes to their new position.
+    nodeEnter.transition(nodeEnterTransition)
+      .attr("transform", (d) => "translate(" + d.y + "," + d.x + ")")
       .style("opacity", 1);
-  node.transition()
+
+    node.transition()
       .duration(duration)
-      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
-      .style("opacity", 1)
-      .select("rect")
-      .style("fill", 'rgb(37, 42, 50)');
-  // Transition exiting nodes to the parent's new position.
-  node.exit().transition()
+      .attr("transform", (d) => "translate(" + d.y + "," + d.x + ")")
+      .style("opacity", 1);
+
+
+    // Transition exiting nodes to the parent's new position.
+    node.exit().transition()
       .duration(duration)
-      .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+      .attr("transform", () => "translate(" + source.y + "," + source.x + ")")
       .style("opacity", 0)
       .remove();
+
+
     // Stash the old positions for transition.
-    new_root.each(function(d) {
+    root.each((d) => {
       d.x0 = d.x;
       d.y0 = d.y;
     });
   }
-    // Toggle children on click.
+
+  // Toggle children on click.
   function click(d) {
     if (d.children) {
       d._children = d.children;
@@ -650,13 +684,10 @@
       d.children = d._children;
       d._children = null;
     }
+    d3.select(this).remove()
     update(d);
   }
-    function color(d) {
-      return d._children ? "#3182bd" : d.children ? "#c6dbef" : "#fd8d3c";
-    }
-    ///////end of collapsible
-  }
+}
   // end treeRender function
     switch (tab) {
       case 'tree':
