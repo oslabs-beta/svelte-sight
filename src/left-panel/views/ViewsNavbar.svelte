@@ -597,7 +597,7 @@
       .attr("y", -barHeight / 2)
       .attr("height", barHeight)
       .attr("width", barWidth)
-      .style("fill", color)
+      .style("fill", 'rgb(37, 42, 50)')
       .on("click", click)
       .on('mouseover', function(d) {
             let statesRendered = document.createElement('pre')
@@ -614,6 +614,9 @@
   nodeEnter.append("text")
       .attr("dy", 3.5)
       .attr("dx", 5.5)
+      .style('fill', 'white')
+      .attr('cursor', 'pointer')
+      .on("click", click)
       .text(function(d) { return d.data.id; });
   // Transition nodes to their new position.
   nodeEnter.transition()
@@ -625,7 +628,7 @@
       .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
       .style("opacity", 1)
       .select("rect")
-      .style("fill", color);
+      .style("fill", 'rgb(37, 42, 50)');
   // Transition exiting nodes to the parent's new position.
   node.exit().transition()
       .duration(duration)
