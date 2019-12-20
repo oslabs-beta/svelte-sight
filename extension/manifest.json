@@ -19,17 +19,17 @@
   "devtools_page": "devtools.html",
   "browser_action": {
     "default_icon": {
-      "16": "assets/st-logo16.png",
-      "32": "assets/st-logo32.png",
-      "48": "assets/st-logo48.png",
-      "128": "assets/st-logo128.png"
+      "16": "assets/ss-logo-16.png",
+      "32": "assets/ss-logo-32.png",
+      "48": "assets/ss-logo-48.png",
+      "128": "assets/ss-logo-128.png"
     }
   },
   "icons": {
-    "16": "assets/st-logo16.png",
-    "32": "assets/st-logo32.png",
-    "48": "assets/st-logo48.png",
-    "128": "assets/st-logo128.png"
+    "16": "assets/ss-logo-16.png",
+    "32": "assets/ss-logo-32.png",
+    "48": "assets/ss-logo-48.png",
+    "128": "assets/ss-logo-128.png"
   },
   "manifest_version": 2
 }
