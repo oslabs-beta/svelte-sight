@@ -17,6 +17,7 @@
   }
 
   #views-root {
+    margin-top: 10px;
     font-size: 1rem;
   }
 
@@ -24,5 +25,6 @@
     display: flex;
     justify-content: center;
     margin-top: 10px;
+    width: 100%;
   }
 </style>
