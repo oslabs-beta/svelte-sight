@@ -12,7 +12,7 @@
   }); 
   backgroundPageConnection.onMessage.addListener(() => {
     console.log('in backgroundPageConnection onMessage App.svelte');
-    getData();
+    getData('tree');
     refreshPage = false;
   });
   //// 
@@ -356,9 +356,9 @@
       // modified the data to show only Props keys for better user experience
       for (let i = 0; i < componentTemplate.length; i++) {
         if (!componentTemplate[i].hasOwnProperty('data')) {
-          componentTemplate[i].data = {State : 'No States!', Props : "No Props!"}
+          componentTemplate[i].data = {State : 'No State', Props : 'No Props'}
         } else if (Object.keys(componentTemplate[i].data.Props).length === 0) {
-          componentTemplate[i].data.Props = "No Props!"
+          componentTemplate[i].data.Props = 'No Props';
         } else {
           let result = []
           componentTemplate[i].data.Props = result.concat(Object.keys(componentTemplate[i].data.Props))
@@ -380,7 +380,7 @@
         root = template;
    let margin = {top: 30, right: 0, bottom: 30, left: 0},
       width = 400 - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
+      height = 700 - margin.top - margin.bottom;
       // append the svg object to the body of the page
       // appends a 'group' element to 'svg'
       // moves the 'group' element to the top left margin
@@ -465,7 +465,7 @@
         nodeUpdate.select('circle.node')
           .attr('r', 10)
           .style("fill", function(d) {
-              return d._children ? "rgb(244, 210, 221)" : "rgb(98, 145, 150)";
+              return d._children ? "rgb(244, 200, 249)" : "rgb(16, 122, 117)";
           })
           .attr('cursor', 'pointer');
         // Remove any exiting nodes
@@ -548,11 +548,11 @@
     barHeight = 20;
 
   let i = 0,
-    duration = 500,
+    duration = 400,
     root;
 
   let nodeEnterTransition = d3.transition()
-    .duration(750)
+    .duration(300)
     .ease(d3.easeLinear);
 
 
