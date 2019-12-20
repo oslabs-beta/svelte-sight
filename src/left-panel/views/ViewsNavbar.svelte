@@ -12,7 +12,7 @@
   }); 
   backgroundPageConnection.onMessage.addListener(() => {
     console.log('in backgroundPageConnection onMessage App.svelte');
-    getData();
+    getData('tree');
     refreshPage = false;
   });
   //// 
@@ -356,9 +356,9 @@
       // modified the data to show only Props keys for better user experience
       for (let i = 0; i < componentTemplate.length; i++) {
         if (!componentTemplate[i].hasOwnProperty('data')) {
-          componentTemplate[i].data = {State : 'No States!', Props : "No Props!"}
+          componentTemplate[i].data = {State : 'No States', Props : 'No Props'}
         } else if (Object.keys(componentTemplate[i].data.Props).length === 0) {
-          componentTemplate[i].data.Props = "No Props!"
+          componentTemplate[i].data.Props = 'No Props';
         } else {
           let result = []
           componentTemplate[i].data.Props = result.concat(Object.keys(componentTemplate[i].data.Props))
@@ -465,7 +465,7 @@
         nodeUpdate.select('circle.node')
           .attr('r', 10)
           .style("fill", function(d) {
-              return d._children ? "rgb(194, 160, 251)" : "rgb(16, 122, 117)";
+              return d._children ? "rgb(244, 200, 249)" : "rgb(16, 122, 117)";
           })
           .attr('cursor', 'pointer');
         // Remove any exiting nodes
