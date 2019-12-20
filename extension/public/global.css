@@ -13,31 +13,6 @@ body {
 	color: white;
 }
 
-a {
-	color: rgb(0,100,200);
-	text-decoration: none;
-}
-
-a:hover {
-	text-decoration: underline;
-}
-
-a:visited {
-	color: rgb(0,80,160);
-}
-
-label {
-	display: block;
-}
-
-input, button, select, textarea {
-	font-family: inherit;
-	font-size: inherit;
-	padding: 0.4em;
-	margin: 0 0 0.5em 0;
-	box-sizing: border-box;
-}
-
 button {
 	color: white;
 	background-color: rgb(53, 60, 69);
@@ -48,6 +23,8 @@ button {
 	margin: 0;
 	float: left;
 	font-size: 15px;
+	font-family: Consolas, Courier, monospace;
+	box-sizing: border-box;
 }
 
 button:hover, button:active {

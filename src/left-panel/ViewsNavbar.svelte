@@ -1,7 +1,9 @@
 <script>
   import svelte from 'svelte/compiler';
+
   // Refresh page
   let refreshPage = true;
+
   // DevTools Page Connection to Background
   const backgroundPageConnection = chrome.runtime.connect({
     name: 'panel'
@@ -11,11 +13,10 @@
     tabId: chrome.devtools.inspectedWindow.tabId
   }); 
   backgroundPageConnection.onMessage.addListener(() => {
-    console.log('in backgroundPageConnection onMessage App.svelte');
     getData('tree');
     refreshPage = false;
   });
-  //// 
+  
   // Function to color code JSON objects
   function syntaxHighlight(json) {
     json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -169,10 +170,7 @@
               for (let j = 0; j < arr.length; j += 1) {
                 let success = 0;
                 function searchTree(tree, keyToSearchFor, valToSubstituteIfKeyIsFound) {
-                  // console.log('componentTree: ', componentTree)
-                  // console.log('tree: ', tree)
                   for(let key in tree) {
-                    // console.log(`${key} === ${keyToSearchFor}?`)
                     if (key === keyToSearchFor) {
                         tree[key] = valToSubstituteIfKeyIsFound;
                         arr.splice(j, 1);
@@ -219,31 +217,11 @@
               componentTree = unorderedListOfNodes[0];
               unorderedListOfNodes.shift();
               createTree(unorderedListOfNodes);
-              console.log('')
-              console.log('FINALunorderedListOfNodes', unorderedListOfNodes, JSON.stringify(unorderedListOfNodes))
-              console.log('FINALcomponentTree: ', componentTree)
-              console.log('D3PreTree', D3PreTree);  // For D3
-              // Raw Tab
-              // if (tab === 'raw') {
-              //   viewsRoot.innerHTML = '';
-              //   const pre = document.createElement('pre');
-              //   const prettyJSON = JSON.stringify(componentTree, null, 3);
-              //   pre.innerHTML = syntaxHighlight(prettyJSON);
-              //   viewsRoot.appendChild(pre);
-              // }
-              //////////////////// TESTING HIDDEN STATE //////////////////
-              // console.log(componentTree['<App />'].hasOwnProperty('State'))
-              // if (componentTree['<App />'].hasOwnProperty('State')) {
-              //   Object.defineProperty(componentTree['<App />'], 'State', {
-              //     enumerable: true,
-              //   });
-              //   console.log('FINALcomponentTree: ', componentTree)
-              // }
             }
             i += 1
         }})
       })
-		  // globals for D3 component treee
+		// globals for D3 component treee
 		let AST = []
     let urls = []
     
@@ -617,15 +595,6 @@
           })
       .text((d) => d.children ? '\uf107' : d._children ? '\uf105' : "");
 
-    // adding file or folder
-    // nodeEnter.append('text')
-    //   .attr('x', -10)
-    //   .attr('y', 2)
-    //   .attr('fill', (d) => d.children || d._children ? 'white' : 'white')
-    //   .attr('class', 'fas')
-    //   .attr('font-size', '12px')
-    //   .text((d) => d.children || d._children ? '\uf07b' : '\uf15b');
-
     // adding file or folder names
     nodeEnter.append("text")
       .attr("dy", 3.5)
@@ -688,7 +657,7 @@
     update(d);
   }
 }
-  // end treeRender function
+
     switch (tab) {
       case 'tree':
         viewsRoot.innerHTML = '';
@@ -749,6 +718,7 @@
     color: white;
     font-size: 1.25rem;
   }
+  
   /* Loading Icon */
   @keyframes ldio-qgqa75k37hd-r {
     0%, 100% { animation-timing-function: cubic-bezier(0.2 0 0.8 0.8) }

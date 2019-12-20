@@ -1,5 +1,4 @@
 <script>
-
 </script>
 
 <div id='views-display'>

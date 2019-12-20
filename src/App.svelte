@@ -1,6 +1,6 @@
 <script>
   import svelte from 'svelte/compiler';
-  import ViewsContainer from './left-panel/views/ViewsContainer.svelte';
+  import ViewsContainer from './left-panel/ViewsContainer.svelte';
   import RightContainer from './right-panel/RightContainer.svelte';
 </script>
 
