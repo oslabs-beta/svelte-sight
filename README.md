@@ -1,93 +1,34 @@
-*Psst — looking for a shareable component template? Go here --> [sveltejs/component-template](https://github.com/sveltejs/component-template)*
+<img src="/extension/assets/ss-gh.png" />
 
----
+Svelte Sight is a visualization tool that allows you to view a complete component hierarchy tree of your Svelte application along with each component's state and props.
 
-# svelte app
+<p align="center">
+  <img src="/extension/assets/demonstration1.gif">
+</p>
 
-This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
+## Getting Started
 
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
+1. Install Svelte Sight from the Chrome Web Store
+2. Run your Svelte application 
+3. Open Chrome Developer Tools (Cmd + Option + I) & navigate to the Svelte Sight panel
+4. Happy developing!
 
-```bash
-npx degit sveltejs/template svelte-app
-cd svelte-app
-```
+## Contributing
 
-*Note that you will need to have [Node.js](https://nodejs.org) installed.*
+Have suggestions for improvement or found a bug? We would love to hear from you!
 
+Please open an issue to submit feedback or problems you come across.
 
-## Get started
+## Authors
 
-Install the dependencies...
+Jason Nastovski [@varplanet](https://github.com/varplanet)
 
-```bash
-cd svelte-app
-npm install
-```
+Kelvin Wang [@zerodegreekelvin](https://github.com/zerodegreekelvin)
 
-...then start [Rollup](https://rollupjs.org):
+Kenneth Trang [@kennethtrang](https://github.com/kennethtrang)
 
-```bash
-npm run dev
-```
+Sung Do [@sungdo1004](https://github.com/sungdo1004)
 
-Navigate to [localhost:5000](http://localhost:5000). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
+## License
 
-By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
-
-
-## Building and running in production mode
-
-To create an optimised version of the app:
-
-```bash
-npm run build
-```
-
-You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
-
-
-## Single-page app mode
-
-By default, sirv will only respond to requests that match files in `public`. This is to maximise compatibility with static fileservers, allowing you to deploy your app anywhere.
-
-If you're building a single-page app (SPA) with multiple routes, sirv needs to be able to respond to requests for *any* path. You can make it so by editing the `"start"` command in package.json:
-
-```js
-"start": "sirv public --single"
-```
-
-
-## Deploying to the web
-
-### With [now](https://zeit.co/now)
-
-Install `now` if you haven't already:
-
-```bash
-npm install -g now
-```
-
-Then, from within your project folder:
-
-```bash
-cd public
-now deploy --name my-project
-```
-
-As an alternative, use the [Now desktop client](https://zeit.co/download) and simply drag the unzipped project folder to the taskbar icon.
-
-### With [surge](https://surge.sh/)
-
-Install `surge` if you haven't already:
-
-```bash
-npm install -g surge
-```
-
-Then, from within your project folder:
-
-```bash
-npm run build
-surge public my-project.surge.sh
-```
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
