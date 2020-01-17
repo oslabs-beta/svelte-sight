@@ -1,0 +1,35 @@
+{
+  "name": "Svelte Sight",
+  "version": "1.0.0",
+  "description": "Svelte component hierarchy, state, and props visualizer",
+  "content_security_policy":"script-src 'self' https://d3js.org/d3.v5.min.js; object-src 'self'",
+  "permissions": [
+    "tabs",
+    "activeTab", 
+    "<all_urls>"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["contentscript.js"]
+    }],
+  "devtools_page": "devtools.html",
+  "browser_action": {
+    "default_icon": {
+      "16": "assets/ss-logo-16.png",
+      "32": "assets/ss-logo-32.png",
+      "48": "assets/ss-logo-48.png",
+      "128": "assets/ss-logo-128.png"
+    }
+  },
+  "icons": {
+    "16": "assets/ss-logo-16.png",
+    "32": "assets/ss-logo-32.png",
+    "48": "assets/ss-logo-48.png",
+    "128": "assets/ss-logo-128.png"
+  },
+  "manifest_version": 2
+}
