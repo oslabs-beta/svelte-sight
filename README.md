@@ -5,7 +5,7 @@
 Svelte Sight is a visualization tool that allows you to view a complete component hierarchy tree of your Svelte application along with each component's state and props.
 
 <p align="center">
-  <img src="/extension/assets/demonstration1.gif">
+  <img src="/extension/assets/demo.gif">
 </p>
 
 ## Getting Started
