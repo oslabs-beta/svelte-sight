@@ -1,1 +1,1 @@
-chrome.runtime.sendMessage({ msg: 'hello from content' });
+chrome.runtime.sendMessage({ msg: 'from contentscript' });
