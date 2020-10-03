@@ -1,6 +1,6 @@
 <img src="/extension/assets/ss-gh.png" />
 
-(Svelte Sight is currently in alpha version, if you're interested in contributing please message one of the authors!)
+(Svelte Sight is currently in beta version, if you're interested in contributing please message one of the authors!)
 
 Svelte Sight is a visualization tool that allows you to view a complete component hierarchy tree of your Svelte application along with each component's state and props.
 
@@ -23,7 +23,7 @@ Please open an issue to submit feedback or problems you come across.
 
 ## Authors
 
-Jason Nastovski [@varplanet](https://github.com/varplanet)
+Jason Pike [@varplanet](https://github.com/varplanet)
 
 Kelvin Wang [@zerodegreekelvin](https://github.com/zerodegreekelvin)
 
