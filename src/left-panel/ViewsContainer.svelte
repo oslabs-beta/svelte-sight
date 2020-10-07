@@ -15,12 +15,4 @@
     grid-template-rows: 35px minmax(0, 1fr);
     overflow: auto;
   }
-
-  ViewsNavbar {
-    grid-row: 1 / span 1;
-  }
-
-  ViewsDisplay {
-    grid-row: 2 / span 1;
-  }
 </style>

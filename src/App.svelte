@@ -4,7 +4,6 @@
   import RightContainer from './right-panel/RightContainer.svelte';
 </script>
 
-
 <main>
   <ViewsContainer />
   <RightContainer />
