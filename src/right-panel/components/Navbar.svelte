@@ -1,12 +1,13 @@
 <script>
+  export let type;
 </script>
 
-<div id='props-navbar'>
-  <h2>Props</h2>
+<div id={`${type.toLowerCase()}-navbar`}>
+  <h2>{type}</h2>
 </div>
 
 <style>
-  #props-navbar {
+  #state-navbar, #props-navbar {
     background-color: rgb(76, 80, 86);
     display: flex;
     align-items: center;
