@@ -15,14 +15,9 @@ const exploreCompositeDataType = (node) => {
   const obj = {};
   for (let i = 0; i < node.properties.length; i += 1) {
     if (node.properties[i].value.type === 'Literal') {
-      obj[
-        node.properties[i].key.name
-            || node.properties[i].key.value
-      ] = node.properties[i].value.value;
+      obj[node.properties[i].key.name || node.properties[i].key.value] = node.properties[i].value.value;
     } else {
-      obj[
-        node.properties[i].key.name
-      ] = exploreCompositeDataType(node.properties[i].value);
+      obj[node.properties[i].key.name] = exploreCompositeDataType(node.properties[i].value);
     }
   }
   return obj;

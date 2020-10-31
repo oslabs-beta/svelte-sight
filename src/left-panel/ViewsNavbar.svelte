@@ -34,152 +34,156 @@
     // This is a pre- or partial tree with known relationships among componenets/files that go only 1 layer deep (this is all we need to build the rest of the tree)
     const unorderedListOfNodes = [];
     let componentTree;
-    chrome.devtools.inspectedWindow.getResources(resources => {
-      const arrSvelteFiles = resources.filter(file =>
-        file.url.includes(".svelte")
-      );
 
+    const createNode = (ast) => {
+      const node = {};
+      const dependencies = {};
+      const state = {};
+      const props = {};
+      const elementOfD3PreTree = {};
+
+      ast.instance.content.body.forEach((el) => {
+        // Find dependencies (via import statements) of current svelte component/file and store the dep in the node for said svelte component/file
+        if (
+          el.type === "ImportDeclaration" &&
+          el.source.value.includes(".svelte")
+        ) {
+          const componentName = `<${el.source.value.slice(2, el.source.value.length - 7)} />`;
+          dependencies[componentName] = {};
+        } 
+        // Find props (via export statements) of current svelte component/file and store the props in the node for said svelte component/file
+        else if (el.type === "ExportNamedDeclaration") {
+          props[el.declaration.declarations[0].id.name] = null;
+        }
+      });
+
+      node[componentNames[i]] = Object.keys(dependencies).length ? dependencies : {};
+
+      Object.defineProperty(node[componentNames[i]], "Props", {
+        value: props,
+        configurable: true,
+        writable: true,
+        enumerable: false
+      });
+
+      svelte.walk(ast, {
+        enter(ASTnode, parent, prop, index) {
+          if (ASTnode.hasOwnProperty("declarations")) {
+            // For variable declarations that either have not been initialized or have a value that is equal to "null"
+            if (!ASTnode.declarations[0].init) {
+              state[ASTnode.declarations[0].id.name] = ASTnode.declarations[0].init;
+            } 
+            // For variable declarations that have a value that is a primitive data type or is a "Literal"
+            else if (ASTnode.declarations[0].init.type === "Literal") {
+              state[ASTnode.declarations[0].id.name] = ASTnode.declarations[0].init.value;
+            } 
+            // For variable declarations that have a value that is a composite data type
+            else if (
+              ASTnode.declarations[0].init.type === "ObjectExpression" ||
+              ASTnode.declarations[0].init.type === "ArrayExpression"
+            ) {
+              state[ASTnode.declarations[0].id.name] = exploreCompositeDataType(ASTnode.declarations[0].init);
+            }
+
+            Object.defineProperty(node[componentNames[i]], "State", {
+              value: state,
+              configurable: true,
+              writable: true,
+              enumerable: false
+            });
+          }
+        },
+        leave(ASTnode, parent, prop, index) {
+          // doSomethingElse(ASTnode) if required
+        }
+      });
+
+      if (Object.keys(node).length) {
+        unorderedListOfNodes.push(node);
+
+        // For D3
+        const temp = {};
+        temp["State"] = state;
+        temp["Props"] = props;
+        elementOfD3PreTree[componentNames[i]] = temp;
+        D3PreTree.push(elementOfD3PreTree);
+      }
+    }
+
+    const createTree = (arr) => {
+      for (let j = 0; j < arr.length; j += 1) {
+        let success = 0;
+
+        const searchTree = (
+          tree,
+          keyToSearchFor,
+          valToSubstituteIfKeyIsFound
+        ) => {
+          for (const key in tree) {
+            if (key === keyToSearchFor) {
+              tree[key] = valToSubstituteIfKeyIsFound;
+              arr.splice(j, 1);
+              success += 1;
+              return true;
+            }
+            if (
+              Object.keys(tree[key]).length &&
+              searchTree(
+                tree[key],
+                keyToSearchFor,
+                valToSubstituteIfKeyIsFound
+              )
+            ) {
+              return true;
+            }
+          }
+          return false;
+        }
+
+        for (const key in arr[j]) {
+          // If an unordered array node has keys that are not null (an object and therefore has dependencies)
+          if (Object.keys(arr[j][key]).length > 0) {
+            // testing top-most component (second level)
+            for (const nestedKey in arr[j][key]) {
+              for (const masterKey in componentTree) {
+                if (nestedKey === masterKey) {
+                  arr[j][key][nestedKey] = componentTree[masterKey];
+                  componentTree = arr[j];
+                  arr.splice(j, 1);
+                  success += 1;
+                }
+              }
+            }
+          }
+        }
+
+        for (const key in arr[j]) {
+          if (!success) {
+            searchTree(componentTree, key, arr[j][key]);
+          }
+        }
+        if (success) {
+          j -= success;
+          success = 0;
+        }
+      }
+      
+      if (arr.length !== 0) {
+        createTree(arr);
+      }
+    }
+
+    // Get resources of inspected program and generate views
+    chrome.devtools.inspectedWindow.getResources(resources => {
+      const arrSvelteFiles = resources.filter(file =>file.url.includes(".svelte"));
       componentNames = arrSvelteFiles.map(svelteFile =>`<${svelteFile.url.slice(7, el.url.indexOf("/"))} />`);
 
       arrSvelteFiles.forEach(svelteFile => {
         svelteFile.getContent(source => {
           if (source) {
             const ast = svelte.parse(source);
+            createNode(ast);
 
-            const createNode = () => {
-              const node = {};
-              const dependencies = {};
-              const state = {};
-              const props = {};
-              const elementOfD3PreTree = {};
-
-              ast.instance.content.body.forEach((el) => {
-                // Find dependencies (via import statements) of current svelte component/file and store the dep in the node for said svelte component/file
-                if (
-                  el.type === "ImportDeclaration" &&
-                  el.source.value.includes(".svelte")
-                ) {
-                  const componentName = `<${el.source.value.slice(2, el.source.value.length - 7)} />`;
-                  dependencies[componentName] = {};
-                } 
-                // Find props (via export statements) of current svelte component/file and store the props in the node for said svelte component/file
-                else if (el.type === "ExportNamedDeclaration") {
-                  props[el.declaration.declarations[0].id.name] = null;
-                }
-              });
-
-              node[componentNames[i]] = Object.keys(dependencies).length ? dependencies : {};
-
-              Object.defineProperty(node[componentNames[i]], "Props", {
-                value: props,
-                configurable: true,
-                writable: true,
-                enumerable: false
-              });
-
-              svelte.walk(ast, {
-                enter(ASTnode, parent, prop, index) {
-                  if (ASTnode.hasOwnProperty("declarations")) {
-                    // For variable declarations that either have not been initialized or have a value that is equal to "null"
-                    if (!ASTnode.declarations[0].init) {
-                      state[ASTnode.declarations[0].id.name] = ASTnode.declarations[0].init;
-                    } 
-                    // For variable declarations that have a value that is a primitive data type or is a "Literal"
-                    else if (ASTnode.declarations[0].init.type === "Literal") {
-                      state[ASTnode.declarations[0].id.name] = ASTnode.declarations[0].init.value;
-                    } 
-                    // For variable declarations that have a value that is a composite data type
-                    else if (
-                      ASTnode.declarations[0].init.type === "ObjectExpression" ||
-                      ASTnode.declarations[0].init.type === "ArrayExpression"
-                    ) {
-                      state[ASTnode.declarations[0].id.name] = exploreCompositeDataType(ASTnode.declarations[0].init);
-                    }
-
-                    Object.defineProperty(node[componentNames[i]], "State", {
-                      value: state,
-                      configurable: true,
-                      writable: true,
-                      enumerable: false
-                    });
-                  }
-                },
-                leave(ASTnode, parent, prop, index) {
-                  // doSomethingElse(ASTnode) if required
-                }
-              });
-
-              if (Object.keys(node).length) {
-                unorderedListOfNodes.push(node);
-
-                // For D3
-                const temp = {};
-                temp["State"] = state;
-                temp["Props"] = props;
-                elementOfD3PreTree[componentNames[i]] = temp;
-                D3PreTree.push(elementOfD3PreTree);
-              }
-            }
-            createNode();
-
-            const createTree = (arr) => {
-              for (let j = 0; j < arr.length; j += 1) {
-                let success = 0;
-                const searchTree = (
-                  tree,
-                  keyToSearchFor,
-                  valToSubstituteIfKeyIsFound
-                ) => {
-                  for (let key in tree) {
-                    if (key === keyToSearchFor) {
-                      tree[key] = valToSubstituteIfKeyIsFound;
-                      arr.splice(j, 1);
-                      success += 1;
-                      return true;
-                    }
-                    if (
-                      Object.entries(tree[key]).length !== 0 &&
-                      searchTree(
-                        tree[key],
-                        keyToSearchFor,
-                        valToSubstituteIfKeyIsFound
-                      )
-                    ) {
-                      return true;
-                    }
-                  }
-                  return false;
-                }
-                for (let key in arr[j]) {
-                  // if the value of a key in the object in the unorderedArray is not null (an object and therefore has dependencies)
-                  if (Object.entries(arr[j][key]).length !== 0) {
-                    // testing top-most component (second level)
-                    for (let keyOfKey in arr[j][key]) {
-                      for (let masterKey in componentTree) {
-                        if (keyOfKey === masterKey) {
-                          arr[j][key][keyOfKey] = componentTree[masterKey];
-                          componentTree = arr[j];
-                          arr.splice(j, 1);
-                          success += 1;
-                        }
-                      }
-                    }
-                  }
-                }
-                for (let key in arr[j]) {
-                  if (!success) {
-                    searchTree(componentTree, key, arr[j][key]);
-                  }
-                }
-                if (success) {
-                  j -= success;
-                  success = 0;
-                }
-              }
-              if (arr.length !== 0) {
-                createTree(arr);
-              }
-            }
             if (i === componentNames.length - 1) {
               componentTree = unorderedListOfNodes[0];
               unorderedListOfNodes.shift();
@@ -203,7 +207,8 @@
         });
       }
 
-      // Runs after svelte.parse is completed
+      /* ---- D3 ---- */
+      // executes after svelte.parse is completed
       setTimeout(() => {
         // modified D3PreTree so that it fits for D3 stratify function
         const newD3Pre = [];
