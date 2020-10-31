@@ -21,7 +21,7 @@
     refreshPage = false;
   });
 
-  // Conditional rendering
+  // Generate views
   const getData = tab => {
     const viewsRoot = document.getElementById("views-root");
     const statesRoot = document.getElementById("states-root");
@@ -167,7 +167,7 @@
           success = 0;
         }
       }
-      
+
       if (arr.length !== 0) {
         createTree(arr);
       }
