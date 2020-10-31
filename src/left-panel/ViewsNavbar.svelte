@@ -80,55 +80,36 @@
               svelte.walk(ast, {
                 enter(ASTnode, parent, prop, index) {
                   if (ASTnode.hasOwnProperty("declarations")) {
-                    // For variable declarations that either have not been initialized or have a value that is equal to 'null'
+                    // For variable declarations that either have not been initialized or have a value that is equal to "null"
                     if (!ASTnode.declarations[0].init) {
-                      state[ASTnode.declarations[0].id.name] =
-                        ASTnode.declarations[0].init;
-                      Object.defineProperty(node[componentNames[i]], "State", {
-                        value: state,
-                        configurable: true,
-                        writable: true,
-                        enumerable: false
-                      });
-
-                      // For variable declarations that have a value that is a primitive data type or is a "literal"
-                    } else if (
-                      ASTnode.declarations[0].init.type === "Literal"
-                    ) {
-                      state[ASTnode.declarations[0].id.name] =
-                        ASTnode.declarations[0].init.value;
-                      Object.defineProperty(node[componentNames[i]], "State", {
-                        value: state,
-                        configurable: true,
-                        writable: true,
-                        enumerable: false
-                      });
-
-                      // For variable declarations that have a value that is a composite data
-                    } else if (
-                      ASTnode.declarations[0].init.type ===
-                        "ObjectExpression" ||
+                      state[ASTnode.declarations[0].id.name] = ASTnode.declarations[0].init;
+                    } 
+                    // For variable declarations that have a value that is a primitive data type or is a "Literal"
+                    else if (ASTnode.declarations[0].init.type === "Literal") {
+                      state[ASTnode.declarations[0].id.name] = ASTnode.declarations[0].init.value;
+                    } 
+                    // For variable declarations that have a value that is a composite data type
+                    else if (
+                      ASTnode.declarations[0].init.type === "ObjectExpression" ||
                       ASTnode.declarations[0].init.type === "ArrayExpression"
                     ) {
-                      state[
-                        ASTnode.declarations[0].id.name
-                      ] = exploreCompositeDataType(
-                        ASTnode.declarations[0].init
-                      );
-                      Object.defineProperty(node[componentNames[i]], "State", {
-                        value: state,
-                        configurable: true,
-                        writable: true,
-                        enumerable: false
-                      });
+                      state[ASTnode.declarations[0].id.name] = exploreCompositeDataType(ASTnode.declarations[0].init);
                     }
+
+                    Object.defineProperty(node[componentNames[i]], "State", {
+                      value: state,
+                      configurable: true,
+                      writable: true,
+                      enumerable: false
+                    });
                   }
                 },
                 leave(ASTnode, parent, prop, index) {
-                  // do_something_else(ASTnode);
+                  // doSomethingElse(ASTnode) if required
                 }
               });
-              if (Object.entries(node).length !== 0) {
+
+              if (Object.keys(node).length) {
                 unorderedListOfNodes.push(node);
 
                 // For D3
