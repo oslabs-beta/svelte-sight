@@ -1,5 +1,6 @@
 <script>
   import svelte from "svelte/compiler";
+  import exploreCompositeDataType from "../utils/exploreCompositeDataType";
   import * as d3ChartRender from "../utils/d3ChartRender";
   import * as d3TreeRender from "../utils/d3TreeRender";
   import syntaxHighlight from "../utils/syntaxHighlight";
@@ -26,119 +27,65 @@
     const statesRoot = document.getElementById("states-root");
     const propsRoot = document.getElementById("props-root");
     const chartRoot = document.getElementById("chart-root");
-    // globals
+    
     let i = 0;
-    const componentNames = [];
+    let componentNames = [];
     const D3PreTree = [];
-    const unorderedListOfNodes = []; // This is a pre- or partial tree with known relationships among componenets/files that go only 1 layer deep (this is all we need to build the rest of the tree)
+    // This is a pre- or partial tree with known relationships among componenets/files that go only 1 layer deep (this is all we need to build the rest of the tree)
+    const unorderedListOfNodes = [];
     let componentTree;
     chrome.devtools.inspectedWindow.getResources(resources => {
       const arrSvelteFiles = resources.filter(file =>
         file.url.includes(".svelte")
       );
 
-      arrSvelteFiles.forEach(el =>
-        componentNames.push(
-          `<${el.url
-            .split("")
-            .reverse()
-            .join("")
-            .slice(
-              7,
-              el.url
-                .split("")
-                .reverse()
-                .join("")
-                .indexOf("/")
-            )
-            .split("")
-            .reverse()
-            .join("")} />`
-        )
-      );
-      arrSvelteFiles.map(resource => {
-        resource.getContent(source => {
+      componentNames = arrSvelteFiles.map(svelteFile =>`<${svelteFile.url.slice(7, el.url.indexOf("/"))} />`);
+
+      arrSvelteFiles.forEach(svelteFile => {
+        svelteFile.getContent(source => {
           if (source) {
             const ast = svelte.parse(source);
-            function compositeDataTypeFoundInAST(node) {
-              if (node.type === "Literal") {
-                return node.value;
-              }
-              if (node.type === "ArrayExpression") {
-                if (node.elements[0].type === "Literal") {
-                  return node.elements;
-                } else {
-                  const arr = [];
-                  for (let i = 0; i < node.elements.length; i += 1) {
-                    arr.push(compositeDataTypeFoundInAST(node.elements[i]));
-                  }
-                  return arr;
-                }
-              } else {
-                const obj = {};
-                for (let i = 0; i < node.properties.length; i += 1) {
-                  if (node.properties[i].value.type === "Literal") {
-                    obj[
-                      node.properties[i].key.name ||
-                        node.properties[i].key.value
-                    ] = node.properties[i].value.value;
-                  } else {
-                    obj[
-                      node.properties[i].key.name
-                    ] = compositeDataTypeFoundInAST(node.properties[i].value);
-                  }
-                }
-                return obj;
-              }
-            }
-            function createNode() {
+
+            const createNode = () => {
               const node = {};
-              const t1 = {};
-              const t2 = {};
-              const t3 = {};
+              const dependencies = {};
+              const state = {};
+              const props = {};
               const elementOfD3PreTree = {};
-              // Find dependencies (via import statements) of current svelte component/file and store the dep in the node for said svelte component/file
-              ast.instance.content.body.forEach(function(el) {
+
+              ast.instance.content.body.forEach((el) => {
+                // Find dependencies (via import statements) of current svelte component/file and store the dep in the node for said svelte component/file
                 if (
                   el.type === "ImportDeclaration" &&
-                  el.source.value.indexOf(".svelte") !== -1
+                  el.source.value.includes(".svelte")
                 ) {
-                  t1[
-                    `<${el.source.value.slice(
-                      2,
-                      el.source.value.length - 7
-                    )} />`
-                  ] = {};
+                  const componentName = `<${el.source.value.slice(2, el.source.value.length - 7)} />`;
+                  dependencies[componentName] = {};
+                } 
+                // Find props (via export statements) of current svelte component/file and store the props in the node for said svelte component/file
+                else if (el.type === "ExportNamedDeclaration") {
+                  props[el.declaration.declarations[0].id.name] = null;
                 }
               });
 
-              if (Object.entries(t1).length !== 0) {
-                node[componentNames[i]] = t1;
-              } else {
-                node[componentNames[i]] = {};
-              }
+              node[componentNames[i]] = Object.keys(dependencies).length ? dependencies : {};
 
-              // Find props (via export statements) of current svelte component/file and store the props in the node for said svelte component/file
-              ast.instance.content.body.forEach(function(el) {
-                if (el.type === "ExportNamedDeclaration") {
-                  t3[el.declaration.declarations[0].id.name] = null;
-                }
-              });
               Object.defineProperty(node[componentNames[i]], "Props", {
-                value: t3,
+                value: props,
                 configurable: true,
                 writable: true,
                 enumerable: false
               });
+
               svelte.walk(ast, {
                 enter(ASTnode, parent, prop, index) {
                   if (ASTnode.hasOwnProperty("declarations")) {
                     // For variable declarations that either have not been initialized or have a value that is equal to 'null'
                     if (!ASTnode.declarations[0].init) {
-                      t2[ASTnode.declarations[0].id.name] =
+                      state[ASTnode.declarations[0].id.name] =
                         ASTnode.declarations[0].init;
                       Object.defineProperty(node[componentNames[i]], "State", {
-                        value: t2,
+                        value: state,
                         configurable: true,
                         writable: true,
                         enumerable: false
@@ -148,10 +95,10 @@
                     } else if (
                       ASTnode.declarations[0].init.type === "Literal"
                     ) {
-                      t2[ASTnode.declarations[0].id.name] =
+                      state[ASTnode.declarations[0].id.name] =
                         ASTnode.declarations[0].init.value;
                       Object.defineProperty(node[componentNames[i]], "State", {
-                        value: t2,
+                        value: state,
                         configurable: true,
                         writable: true,
                         enumerable: false
@@ -163,13 +110,13 @@
                         "ObjectExpression" ||
                       ASTnode.declarations[0].init.type === "ArrayExpression"
                     ) {
-                      t2[
+                      state[
                         ASTnode.declarations[0].id.name
-                      ] = compositeDataTypeFoundInAST(
+                      ] = exploreCompositeDataType(
                         ASTnode.declarations[0].init
                       );
                       Object.defineProperty(node[componentNames[i]], "State", {
-                        value: t2,
+                        value: state,
                         configurable: true,
                         writable: true,
                         enumerable: false
@@ -186,21 +133,22 @@
 
                 // For D3
                 const temp = {};
-                temp["State"] = t2;
-                temp["Props"] = t3;
+                temp["State"] = state;
+                temp["Props"] = props;
                 elementOfD3PreTree[componentNames[i]] = temp;
                 D3PreTree.push(elementOfD3PreTree);
               }
             }
             createNode();
-            function createTree(arr) {
+
+            const createTree = (arr) => {
               for (let j = 0; j < arr.length; j += 1) {
                 let success = 0;
-                function searchTree(
+                const searchTree = (
                   tree,
                   keyToSearchFor,
                   valToSubstituteIfKeyIsFound
-                ) {
+                ) => {
                   for (let key in tree) {
                     if (key === keyToSearchFor) {
                       tree[key] = valToSubstituteIfKeyIsFound;
@@ -260,7 +208,8 @@
           }
         });
       });
-      // globals for D3 component tree
+
+      // For D3 component tree
       let AST = [];
       let urls = [];
 
@@ -272,10 +221,11 @@
           AST.push(svelte.parse(content));
         });
       }
-      // runs next logic after async svelte.parse is completed
+
+      // Runs after svelte.parse is completed
       setTimeout(() => {
-        // modified D3PreTree so that it fits for D3 statify function
-        let newD3Pre = [];
+        // modified D3PreTree so that it fits for D3 stratify function
+        const newD3Pre = [];
         for (let eachObj of D3PreTree) {
           let temp = {};
           let key = Object.keys(eachObj)[0];
